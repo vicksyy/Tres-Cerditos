@@ -54,8 +54,8 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 8vh 6vw;
-  gap: 4vw;
+  padding: 6vh 6vw 18vh;
+  gap: 0;
 }
 
 .pig-btn {
@@ -67,6 +67,7 @@ body {
   display: grid;
   place-items: center;
   transition: transform 200ms ease;
+  margin: 0 -3.6vw;
 }
 
 .pig-btn:focus-visible {
@@ -80,19 +81,39 @@ body {
 }
 
 .pig-img {
-  width: clamp(120px, 16vw, 220px);
+  width: clamp(220px, 28vw, 360px);
   height: auto;
   user-select: none;
   pointer-events: none;
 }
 
+.pig-img--big {
+  width: clamp(260px, 34vw, 420px);
+}
+
+.pig-img--mid {
+  width: clamp(240px, 31vw, 390px);
+}
+
 @media (max-width: 900px) {
   .section-content {
-    gap: 2vw;
-    padding: 10vh 4vw 12vh;
+    gap: 0;
+    padding: 8vh 4vw 18vh;
+  }
+
+  .pig-btn {
+    margin: 0 -6.4vw;
   }
 
   .pig-img {
-    width: clamp(110px, 26vw, 190px);
+    width: clamp(200px, 44vw, 320px);
+  }
+
+  .pig-img--big {
+    width: clamp(230px, 52vw, 380px);
+  }
+
+  .pig-img--mid {
+    width: clamp(215px, 48vw, 350px);
   }
 }
