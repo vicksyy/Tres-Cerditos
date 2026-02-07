@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 
 type PigId = "pig1" | "pig2" | "pig3";
 
@@ -33,8 +33,25 @@ const pigs = [
   },
 ];
 
+type LeafId = "leaf1" | "leaf2" | "leaf3";
+
+type LeafState = Record<LeafId, boolean>;
+
+const leaves = [
+  { id: "leaf1" as const, top: "9vh", duration: "28s", delay: "0s" },
+  { id: "leaf2" as const, top: "18vh", duration: "33s", delay: "6s" },
+  { id: "leaf3" as const, top: "30vh", duration: "31s", delay: "12s" },
+];
+
+const initialLeafState: LeafState = {
+  leaf1: false,
+  leaf2: false,
+  leaf3: false,
+};
+
 export default function Section01() {
   const [active, setActive] = useState<PigState>(initialState);
+  const [leafShifted, setLeafShifted] = useState<LeafState>(initialLeafState);
   const ignoreClickRef = useRef(false);
 
   const setPig = (id: PigId, value: boolean) => {
@@ -71,6 +88,37 @@ export default function Section01() {
         }}
         aria-hidden="true"
       />
+      {leaves.map((leaf) => (
+        <button
+          key={leaf.id}
+          type="button"
+          className="leaf-flight"
+          style={
+            {
+              "--leaf-top": leaf.top,
+              "--leaf-duration": leaf.duration,
+              "--leaf-delay": leaf.delay,
+            } as CSSProperties
+          }
+          onClick={() =>
+            setLeafShifted((prev) => ({
+              ...prev,
+              [leaf.id]: !prev[leaf.id],
+            }))
+          }
+          aria-pressed={leafShifted[leaf.id]}
+          aria-label="Mover hoja al lado"
+        >
+          <span className={`leaf-offset${leafShifted[leaf.id] ? " leaf-offset--shifted" : ""}`}>
+            <img
+              className="leaf-sprite"
+              src="/img/Section01/leaf.png"
+              alt="Hoja volando"
+              draggable={false}
+            />
+          </span>
+        </button>
+      ))}
       <div className="section-content" role="group" aria-label="Cerditos">
         {pigs.map((pig) => (
           <button

@@ -60,6 +60,38 @@ html, body {
   position: relative;
 }
 
+.leaf-flight {
+  top: var(--leaf-top, 12vh);
+  z-index: 2;
+  appearance: none;
+  cursor: pointer;
+  animation: leaf-cross-scene var(--leaf-duration, 30s) linear infinite;
+  animation-delay: var(--leaf-delay, 0s);
+  background: none;
+  border: 0;
+  padding: 0;
+  position: absolute;
+  left: -22vw;
+}
+
+.leaf-offset {
+  transition: transform .28s;
+  display: inline-block;
+}
+
+.leaf-offset--shifted {
+  transform: translateX(22vw)translateY(-2vh)rotate(18deg);
+}
+
+.leaf-sprite {
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  width: clamp(62px, 10vw, 135px);
+  height: auto;
+  animation: 1.2s ease-in-out infinite leaf-flutter;
+}
+
 .pig-btn {
   appearance: none;
   cursor: pointer;
@@ -98,7 +130,43 @@ html, body {
   width: clamp(240px, 31vw, 390px);
 }
 
+@keyframes leaf-cross-scene {
+  0% {
+    transform: translateX(0)translateY(0);
+  }
+
+  45% {
+    transform: translateX(128vw)translateY(2vh);
+  }
+
+  50% {
+    transform: translateX(136vw)translateY(1vh);
+  }
+
+  100% {
+    transform: translateX(0)translateY(-1vh);
+  }
+}
+
+@keyframes leaf-flutter {
+  0% {
+    transform: rotate(-6deg)translateY(0);
+  }
+
+  50% {
+    transform: rotate(8deg)translateY(-5px);
+  }
+
+  100% {
+    transform: rotate(-4deg)translateY(0);
+  }
+}
+
 @media (max-width: 900px) {
+  .leaf-offset--shifted {
+    transform: translateX(16vw)translateY(-1vh)rotate(16deg);
+  }
+
   .section-content {
     gap: 0;
     padding: 8vh 4vw 18vh;
