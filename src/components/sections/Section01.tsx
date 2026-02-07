@@ -48,11 +48,24 @@ const initialLeafState: LeafState = {
   leaf2: false,
   leaf3: false,
 };
+const PIG_OINK_RATE = 1.5;
 
 export default function Section01() {
   const [active, setActive] = useState<PigState>(initialState);
   const [leafShifted, setLeafShifted] = useState<LeafState>(initialLeafState);
   const ignoreClickRef = useRef(false);
+  const pigSoundRef = useRef<HTMLAudioElement | null>(null);
+
+  const playPigSound = () => {
+    if (!pigSoundRef.current) {
+      pigSoundRef.current = new Audio("/sounds/pig_oink.mp3");
+      pigSoundRef.current.preload = "auto";
+      pigSoundRef.current.playbackRate = PIG_OINK_RATE;
+      pigSoundRef.current.preservesPitch = false;
+    }
+    pigSoundRef.current.currentTime = 0;
+    void pigSoundRef.current.play().catch(() => {});
+  };
 
   const setPig = (id: PigId, value: boolean) => {
     setActive((prev) => ({ ...prev, [id]: value }));
@@ -69,6 +82,7 @@ export default function Section01() {
   const handleTouchStart = (id: PigId) => {
     ignoreClickRef.current = true;
     activateExclusive(id);
+    playPigSound();
   };
 
   const handleClick = (id: PigId) => {
@@ -76,6 +90,7 @@ export default function Section01() {
       ignoreClickRef.current = false;
       return;
     }
+    playPigSound();
     togglePig(id);
   };
 

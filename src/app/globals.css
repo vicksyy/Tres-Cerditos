@@ -23,8 +23,8 @@ body {
 
 .main {
   width: 100%;
-  height: 100vh;
-  overflow-y: scroll;
+  height: 100dvh;
+  overflow-y: auto;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
 }
@@ -32,8 +32,10 @@ body {
 .section {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
+  min-height: 100dvh;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   overflow: hidden;
 }
 
@@ -126,6 +128,176 @@ body {
   width: clamp(240px, 31vw, 390px);
 }
 
+.section--02 .pig-img {
+  width: clamp(140px, 18vw, 224px);
+}
+
+.section--02 .pig-img--big {
+  width: clamp(162px, 21.5vw, 260px);
+}
+
+.section--02 .pig-img--mid {
+  width: clamp(158px, 21vw, 258px);
+}
+
+.section--02 .section-content {
+  padding-bottom: 29vh;
+}
+
+.section--02 .pig-btn {
+  margin: 0 -1.75vw;
+}
+
+.section--02 .pig-frame {
+  display: grid;
+  place-items: end center;
+}
+
+.section--02 .pig-layer {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 280ms ease;
+}
+
+.section--02 .pig-layer--visible {
+  opacity: 1;
+}
+
+.section--02 .pig2-goodbye-small {
+  transform: scale(0.86);
+  transform-origin: bottom center;
+}
+
+.section--02 .pig1-raised,
+.section--02 .pig2-raised {
+  transform: translateY(-2.6vh);
+}
+
+.section--02 .pig2-raised.pig2-goodbye-small {
+  transform: translateY(-2.6vh) scale(0.86);
+}
+
+.section--03-content {
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.section--03-build-trigger {
+  position: absolute;
+  right: 16vw;
+  bottom: 34vh;
+  width: clamp(340px, 42vw, 700px);
+  height: clamp(270px, 52vh, 620px);
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.section--03-build-trigger:focus-visible {
+  outline: 4px solid #ffb703;
+  outline-offset: 8px;
+  border-radius: 12px;
+}
+
+.section--03-pig-work {
+  width: clamp(155px, 16.5vw, 255px);
+  height: auto;
+  user-select: none;
+  transform: translateX(-11vw) translateY(3vh);
+}
+
+.section--03-straw {
+  width: clamp(120px, 13vw, 200px);
+  height: auto;
+  user-select: none;
+  transform: translateX(-20vw) translateY(20vh);
+}
+
+.section--03-straw-right {
+  width: clamp(120px, 13vw, 200px);
+  height: auto;
+  user-select: none;
+  transform: translateX(-54vw) translateY(12vh);
+}
+
+.section--03-house {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.section--03-house-layer {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 260ms ease;
+  user-select: none;
+}
+
+.section--03-house-layer--visible {
+  opacity: 1;
+}
+
+.section--03-house-base {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+}
+
+.section--03-house-roof {
+  left: 1.5%;
+  bottom: 28%;
+  width: 97%;
+  height: auto;
+}
+
+.section--03-house-final {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+}
+
+.section--03-dust {
+  position: absolute;
+  inset: -46% -58%;
+  z-index: 5;
+  pointer-events: none;
+  transform-origin: center;
+  animation: dust-cloud 2s ease-in-out forwards;
+}
+
+.section--03-dust-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+@keyframes dust-cloud {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9) rotate(-3deg);
+  }
+  18% {
+    opacity: 0.95;
+    transform: translateY(2px) scale(1) rotate(-1deg);
+  }
+  60% {
+    opacity: 0.92;
+    transform: translateY(-4px) scale(1.06) rotate(2deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(1.1) rotate(4deg);
+  }
+}
+
 @keyframes leaf-cross-scene {
   0% {
     transform: translateX(0) translateY(0);
@@ -153,6 +325,25 @@ body {
   }
 }
 
+@media (max-width: 1200px) and (min-width: 901px) {
+  .section--02 .section-content {
+    padding-bottom: 31vh;
+  }
+
+  .section--02 .pig-btn {
+    margin: 0 -2.1vw;
+  }
+
+  .section--02 .pig1-raised,
+  .section--02 .pig2-raised {
+    transform: translateY(-3vh);
+  }
+
+  .section--02 .pig2-raised.pig2-goodbye-small {
+    transform: translateY(-3vh) scale(0.86);
+  }
+}
+
 @media (max-width: 900px) {
   .leaf-offset--shifted {
     transform: translateX(16vw) translateY(-1vh) rotate(16deg);
@@ -177,5 +368,69 @@ body {
 
   .pig-img--mid {
     width: clamp(215px, 48vw, 350px);
+  }
+
+  .section--02 .pig-img {
+    width: clamp(124px, 26.5vw, 196px);
+  }
+
+  .section--02 .pig-img--big {
+    width: clamp(136px, 30.5vw, 216px);
+  }
+
+  .section--02 .pig-img--mid {
+    width: clamp(138px, 30vw, 220px);
+  }
+
+  .section--02 .section-content {
+    padding-bottom: 29vh;
+  }
+
+  .section--02 .pig-btn {
+    margin: 0 -1.55vw;
+  }
+
+  .section--02 .pig2-goodbye-small {
+    transform: scale(0.84);
+  }
+
+  .section--02 .pig1-raised,
+  .section--02 .pig2-raised {
+    transform: translateY(-2.8vh);
+  }
+
+  .section--02 .pig2-raised.pig2-goodbye-small {
+    transform: translateY(-2.8vh) scale(0.84);
+  }
+
+  .section--03-pig-work {
+    width: clamp(132px, 30vw, 205px);
+    transform: translateX(-9vw) translateY(4vh);
+  }
+
+  .section--03-straw {
+    width: clamp(100px, 24vw, 165px);
+    transform: translateX(-16vw) translateY(18vh);
+  }
+
+  .section--03-straw-right {
+    width: clamp(100px, 24vw, 165px);
+    transform: translateX(-28vw) translateY(14vh);
+  }
+
+  .section--03-house {
+    width: 100%;
+    height: 100%;
+  }
+
+  .section--03-build-trigger {
+    right: 3vw;
+    bottom: 31vh;
+    width: clamp(230px, 62vw, 440px);
+    height: clamp(185px, 36vh, 380px);
+  }
+
+  .section--03-dust {
+    inset: -40% -50%;
   }
 }
