@@ -15,6 +15,7 @@ body {
   padding: 0;
   width: 100%;
   height: 100%;
+  overflow-x: hidden;
   font-family: "Trebuchet MS", "Comic Sans MS", system-ui, sans-serif;
   color: var(--text);
   background: var(--sky);
@@ -25,8 +26,16 @@ body {
   width: 100%;
   height: 100dvh;
   overflow-y: auto;
+  overflow-x: hidden;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.main::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .section {
@@ -430,6 +439,47 @@ body {
   opacity: 1;
 }
 
+.section--04-tool {
+  position: absolute;
+  bottom: 9vh;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.section--04-tool:focus-visible {
+  outline: 3px solid #ffb703;
+  outline-offset: 6px;
+  border-radius: 10px;
+}
+
+.section--04-tool--hammer {
+  left: 49%;
+  bottom: 8.4vh;
+}
+
+.section--04-tool--nail {
+  left: 69%;
+  bottom: 12vh;
+}
+
+.section--04-tool-img {
+  width: clamp(76px, 8.4vw, 132px);
+  height: auto;
+  user-select: none;
+}
+
+.section--04-tool-img--wobble-a {
+  animation: tool-wobble-a 420ms ease;
+}
+
+.section--04-tool-img--wobble-b {
+  animation: tool-wobble-b 420ms ease;
+}
+
 @keyframes dust-cloud {
   0% {
     opacity: 0;
@@ -653,5 +703,53 @@ body {
   .section--04-pig-happy {
     right: 2vw;
     width: clamp(130px, 29vw, 205px);
+  }
+
+  .section--04-tool {
+    bottom: 10vh;
+  }
+
+  .section--04-tool--hammer {
+    left: 42%;
+    bottom: 9.4vh;
+  }
+
+  .section--04-tool--nail {
+    left: 77%;
+    bottom: 13vh;
+  }
+
+  .section--04-tool-img {
+    width: clamp(66px, 15.5vw, 112px);
+  }
+}
+
+@keyframes tool-wobble-a {
+  0% {
+    transform: rotate(0deg);
+  }
+  40% {
+    transform: rotate(-12deg);
+  }
+  75% {
+    transform: rotate(7deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes tool-wobble-b {
+  0% {
+    transform: rotate(0deg);
+  }
+  40% {
+    transform: rotate(12deg);
+  }
+  75% {
+    transform: rotate(-7deg);
+  }
+  100% {
+    transform: rotate(0deg);
   }
 }
