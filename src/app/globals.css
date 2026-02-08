@@ -342,6 +342,10 @@ body {
 }
 
 @media (max-width: 1200px) and (min-width: 901px) {
+  .section--03-pig-work {
+    transform: translateX(-15vw) translateY(6vh);
+  }
+
   .section--02 .section-content {
     padding-bottom: 31vh;
   }

@@ -22,13 +22,13 @@ const pigs = [
   {
     id: "pig3" as const,
     idle: "/img/Section02/pig3_goodbye.png",
-    walk: "/img/Section02/pig2_walk_center.png",
+    walk: "/img/Section02/pig3_walk_center.png",
     alt: "Cerdito 3 caminando",
   },
   {
     id: "pig2" as const,
     idle: "/img/Section02/pig2_goodbye.png",
-    walk: "/img/Section02/pig3_walk_right.png",
+    walk: "/img/Section02/pig2_walk_right.png",
     alt: "Cerdito 2 caminando",
   },
 ];
