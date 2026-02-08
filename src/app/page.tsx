@@ -2,6 +2,7 @@ import Section01 from "@/components/sections/Section01";
 import Section02 from "@/components/sections/Section02";
 import Section03 from "@/components/sections/Section03";
 import Section04 from "@/components/sections/Section04";
+import Section05 from "@/components/sections/Section05";
 
 export default function HomePage() {
   return (
@@ -10,6 +11,7 @@ export default function HomePage() {
       <Section02 />
       <Section03 />
       <Section04 />
+      <Section05 />
     </main>
   );
 }

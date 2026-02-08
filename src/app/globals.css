@@ -299,6 +299,126 @@ body {
   padding: 0;
 }
 
+.section--05-content {
+  padding: 0;
+}
+
+.section--05-pig-trigger {
+  position: absolute;
+  right: 7vw;
+  bottom: 0;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 800ms ease-in-out;
+}
+
+.section--05-pig-trigger--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.section--05-pig-hi {
+  width: clamp(640px, 68vw, 1040px);
+  height: auto;
+  user-select: none;
+}
+
+.section--05-pig-work {
+  position: absolute;
+  left: 8vw;
+  bottom: 18vh;
+  width: clamp(420px, 45vw, 700px);
+  height: auto;
+  transform: scaleX(-1);
+  opacity: 0;
+  transition: opacity 800ms ease-in-out;
+  user-select: none;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.section--05-pig-work--visible {
+  opacity: 1;
+}
+
+.section--05-build-trigger {
+  position: absolute;
+  left: 50%;
+  bottom: 15vh;
+  width: clamp(330px, 46vw, 760px);
+  height: clamp(250px, 54vh, 670px);
+  transform: translateX(-50%);
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.section--05-build-trigger--disabled {
+  pointer-events: none;
+}
+
+.section--05-build-trigger:focus-visible {
+  outline: 4px solid #ffb703;
+  outline-offset: 8px;
+  border-radius: 12px;
+}
+
+.section--05-house {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.section--05-house-layer {
+  position: absolute;
+  left: 8%;
+  bottom: 0;
+  width: 160%;
+  height: auto;
+  opacity: 0;
+  transition: opacity 260ms ease;
+  user-select: none;
+}
+
+.section--05-house-step1 {
+  bottom: -8%;
+}
+
+.section--05-house-layer--visible {
+  opacity: 1;
+}
+
+.section--05-house-layer--fade-in {
+  animation: house-fade-in 700ms ease-out both;
+}
+
+.section--05-dust {
+  position: absolute;
+  top: -54%;
+  right: -92%;
+  bottom: -56%;
+  left: -18%;
+  z-index: 5;
+  pointer-events: none;
+  transform-origin: center;
+  animation: dust-cloud 2s ease-in-out forwards;
+}
+
+.section--05-dust-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
 .section--04-build-trigger {
   position: absolute;
   left: 50%;
@@ -703,6 +823,42 @@ body {
   .section--04-pig-happy {
     right: 2vw;
     width: clamp(130px, 29vw, 205px);
+  }
+
+  .section--05-pig-hi {
+    width: clamp(520px, 116vw, 840px);
+  }
+
+  .section--05-pig-trigger {
+    right: 4vw;
+  }
+
+  .section--05-pig-work {
+    left: 5vw;
+    bottom: 22vh;
+    width: clamp(300px, 68vw, 500px);
+  }
+
+  .section--05-build-trigger {
+    bottom: 20vh;
+    width: clamp(230px, 74vw, 500px);
+    height: clamp(190px, 41vh, 430px);
+  }
+
+  .section--05-house-layer {
+    left: 10%;
+    width: 168%;
+  }
+
+  .section--05-house-step1 {
+    bottom: -10%;
+  }
+
+  .section--05-dust {
+    top: -47%;
+    right: -82%;
+    bottom: -50%;
+    left: -14%;
   }
 
   .section--04-tool {
