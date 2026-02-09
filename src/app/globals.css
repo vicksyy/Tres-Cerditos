@@ -7,6 +7,7 @@
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html,
@@ -216,7 +217,7 @@ body {
   width: clamp(155px, 16.5vw, 255px);
   height: auto;
   user-select: none;
-  transform: translateX(-11vw) translateY(3vh);
+  transform: translateX(-14vw) translateY(3vh);
 }
 
 .section--03-straw-piece {
@@ -229,6 +230,16 @@ body {
 
 .section--03-straw-piece:hover {
   filter: brightness(1.08);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .pig-btn:hover {
+    transform: none;
+  }
+
+  .section--03-straw-piece:hover {
+    filter: none;
+  }
 }
 
 .section--03-house {
@@ -417,6 +428,29 @@ body {
   height: 100%;
   object-fit: contain;
   user-select: none;
+}
+
+.section--06-content {
+  position: relative;
+  padding: 0;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+
+.section--06-wolf {
+  position: absolute;
+  left: -4vw;
+  bottom: 0;
+  width: clamp(640px, 80vw, 1240px);
+  height: auto;
+  transform: translateX(calc(-100% - 12vw));
+  user-select: none;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.section--06-wolf--visible {
+  animation: wolf-enter-left 1300ms ease-out forwards;
 }
 
 .section--04-build-trigger {
@@ -657,6 +691,15 @@ body {
   }
 }
 
+@keyframes wolf-enter-left {
+  0% {
+    transform: translateX(calc(-100% - 12vw));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 @media (max-width: 1200px) and (min-width: 901px) {
   .section--03-pig-work {
     transform: translateX(-15vw) translateY(6vh);
@@ -768,7 +811,7 @@ body {
 
   .section--03-pig-work {
     width: clamp(132px, 30vw, 205px);
-    transform: translateX(-9vw) translateY(4vh);
+    transform: translateX(-12vw) translateY(4vh);
   }
 
   .section--03-house {
@@ -859,6 +902,10 @@ body {
     right: -82%;
     bottom: -50%;
     left: -14%;
+  }
+
+  .section--06-wolf {
+    width: clamp(520px, 128vw, 940px);
   }
 
   .section--04-tool {

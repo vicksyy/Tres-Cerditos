@@ -3,6 +3,7 @@ import Section02 from "@/components/sections/Section02";
 import Section03 from "@/components/sections/Section03";
 import Section04 from "@/components/sections/Section04";
 import Section05 from "@/components/sections/Section05";
+import Section06 from "@/components/sections/Section06";
 
 export default function HomePage() {
   return (
@@ -12,6 +13,7 @@ export default function HomePage() {
       <Section03 />
       <Section04 />
       <Section05 />
+      <Section06 />
     </main>
   );
 }
