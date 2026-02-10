@@ -453,6 +453,22 @@ body {
   animation: wolf-enter-left 1300ms ease-out forwards;
 }
 
+.section--07-content {
+  position: relative;
+  padding: 0;
+}
+
+.section--07-house {
+  position: absolute;
+  right: 16vw;
+  top: 50%;
+  width: clamp(340px, 42vw, 700px);
+  height: auto;
+  transform: translateY(-50%);
+  user-select: none;
+  pointer-events: none;
+}
+
 .section--04-build-trigger {
   position: absolute;
   left: 50%;
@@ -729,6 +745,11 @@ body {
     left: -36%;
   }
 
+  .section--07-house {
+    right: 12vw;
+    width: clamp(300px, 44vw, 560px);
+  }
+
   .section--03-build-trigger {
     right: 12vw;
     bottom: 38vh;
@@ -831,6 +852,11 @@ body {
     right: -50%;
     bottom: -51%;
     left: -50%;
+  }
+
+  .section--07-house {
+    right: 3vw;
+    width: clamp(230px, 62vw, 440px);
   }
 
   .section--04-build-trigger {

@@ -10,7 +10,14 @@ export default function Section07() {
         }}
         aria-hidden="true"
       />
-      <div className="section-content section--07-content" role="group" aria-label="Escena 7" />
+      <div className="section-content section--07-content" role="group" aria-label="Escena 7">
+        <img
+          className="section--07-house"
+          src="/img/Section07/straw_house.png"
+          alt="Casa de paja"
+          draggable={false}
+        />
+      </div>
     </section>
   );
 }
