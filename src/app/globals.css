@@ -580,6 +580,54 @@ body {
   padding: 0;
 }
 
+.section--08-content--interactive {
+  cursor: pointer;
+}
+
+.section--08-wolf-stage {
+  position: absolute;
+  left: 4vw;
+  bottom: 20vh;
+  width: clamp(400px, 46vw, 680px);
+  height: auto;
+  transform: translateX(calc(-100% - 10vw));
+  user-select: none;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.section--08-wolf-stage--visible {
+  animation: wolf-enter-left 1200ms ease-out forwards;
+}
+
+.section--08-wolf-evil,
+.section--08-wolf-blowing {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.section--08-wolf-evil {
+  opacity: 1;
+  transition: opacity 360ms ease;
+}
+
+.section--08-wolf-evil--hidden {
+  opacity: 0;
+}
+
+.section--08-wolf-blowing {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 420ms ease;
+}
+
+.section--08-wolf-blowing--visible {
+  opacity: 1;
+}
+
 .section--08-house {
   position: absolute;
   right: 12vw;
@@ -587,8 +635,45 @@ body {
   width: clamp(400px, 48vw, 820px);
   height: auto;
   transform: translateY(-50%);
+  opacity: 1;
   user-select: none;
   pointer-events: none;
+}
+
+.section--08-house--destroyed {
+  --section08-house-destroy-scale: 1.28;
+  filter: saturate(0.95) contrast(1.03);
+  transform: translateY(-50%) scale(var(--section08-house-destroy-scale));
+}
+
+.section--08-house--impact {
+  animation: house-destroy-impact-08 620ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+}
+
+.section--08-house--hidden {
+  opacity: 0;
+}
+
+.section--08-pigs-surprised {
+  position: absolute;
+  right: 12vw;
+  top: 50%;
+  width: clamp(250px, 29vw, 460px);
+  height: auto;
+  opacity: 0;
+  transform: translateY(-50%) scale(0.98);
+  user-select: none;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.section--08-pigs-surprised--visible {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.section--08-pigs-surprised--impact {
+  animation: pig-surprise-impact-08 620ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
 }
 
 .section--04-build-trigger {
@@ -895,6 +980,17 @@ body {
     width: clamp(360px, 50vw, 700px);
   }
 
+  .section--08-pigs-surprised {
+    right: 9vw;
+    width: clamp(220px, 31vw, 390px);
+  }
+
+  .section--08-wolf-stage {
+    left: 3vw;
+    bottom: 18vh;
+    width: clamp(340px, 46vw, 560px);
+  }
+
   .section--03-build-trigger {
     right: 12vw;
     bottom: 38vh;
@@ -1025,6 +1121,17 @@ body {
   .section--08-house {
     right: 1vw;
     width: clamp(280px, 70vw, 560px);
+  }
+
+  .section--08-pigs-surprised {
+    right: 1vw;
+    width: clamp(190px, 44vw, 340px);
+  }
+
+  .section--08-wolf-stage {
+    left: -4vw;
+    bottom: 22vh;
+    width: clamp(280px, 72vw, 500px);
   }
 
   .section--04-build-trigger {
@@ -1245,5 +1352,53 @@ body {
   100% {
     opacity: 0;
     transform: translateY(-50%) translateX(70vw) rotate(0deg);
+  }
+}
+
+@keyframes house-destroy-impact-08 {
+  0% {
+    transform: translateY(-50%) translateX(0) rotate(0deg)
+      scale(var(--section08-house-destroy-scale, 1.28));
+  }
+  18% {
+    transform: translateY(-50%) translateX(-1.5vw) rotate(-2.2deg)
+      scale(var(--section08-house-destroy-scale, 1.28));
+  }
+  36% {
+    transform: translateY(-50%) translateX(1.3vw) rotate(2deg)
+      scale(var(--section08-house-destroy-scale, 1.28));
+  }
+  54% {
+    transform: translateY(-50%) translateX(-1vw) rotate(-1.5deg)
+      scale(var(--section08-house-destroy-scale, 1.28));
+  }
+  72% {
+    transform: translateY(-50%) translateX(0.7vw) rotate(1.2deg)
+      scale(var(--section08-house-destroy-scale, 1.28));
+  }
+  100% {
+    transform: translateY(-50%) translateX(0) rotate(0deg)
+      scale(var(--section08-house-destroy-scale, 1.28));
+  }
+}
+
+@keyframes pig-surprise-impact-08 {
+  0% {
+    transform: translateY(-50%) translateX(0) rotate(0deg) scale(1);
+  }
+  18% {
+    transform: translateY(-50%) translateX(-1.1vw) rotate(-3deg) scale(1.02);
+  }
+  36% {
+    transform: translateY(-50%) translateX(0.9vw) rotate(2.6deg) scale(0.99);
+  }
+  54% {
+    transform: translateY(-50%) translateX(-0.7vw) rotate(-1.8deg) scale(1.01);
+  }
+  72% {
+    transform: translateY(-50%) translateX(0.5vw) rotate(1.2deg) scale(0.995);
+  }
+  100% {
+    transform: translateY(-50%) translateX(0) rotate(0deg) scale(1);
   }
 }

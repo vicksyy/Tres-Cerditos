@@ -1,6 +1,54 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
 export default function Section08() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const destroyMotionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [wolfVisible, setWolfVisible] = useState(false);
+  const [sceneStep, setSceneStep] = useState(0);
+  const [impactMotion, setImpactMotion] = useState(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setWolfVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.45 },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (destroyMotionTimeoutRef.current) clearTimeout(destroyMotionTimeoutRef.current);
+    };
+  }, []);
+
+  const handleSceneClick = () => {
+    if (destroyMotionTimeoutRef.current) clearTimeout(destroyMotionTimeoutRef.current);
+    setSceneStep((prev) => (prev < 2 ? prev + 1 : prev));
+    setImpactMotion(true);
+    destroyMotionTimeoutRef.current = setTimeout(() => {
+      setImpactMotion(false);
+    }, 620);
+  };
+
+  const isBlowing = sceneStep >= 1;
+  const wolfIsBlowing = sceneStep === 1;
+  const hideHouse = sceneStep >= 2;
+  const showSurprisedPigs = sceneStep >= 2;
+
   return (
-    <section className="section section--08">
+    <section ref={sectionRef} className="section section--08">
       <div
         className="section-bg"
         style={{
@@ -8,11 +56,41 @@ export default function Section08() {
         }}
         aria-hidden="true"
       />
-      <div className="section-content section--08-content" role="group" aria-label="Escena 8">
+      <div
+        className="section-content section--08-content section--08-content--interactive"
+        role="group"
+        aria-label="Escena 8"
+        onClick={handleSceneClick}
+      >
+        <div className={`section--08-wolf-stage${wolfVisible ? " section--08-wolf-stage--visible" : ""}`}>
+          <img
+            className={`section--08-wolf-evil${wolfIsBlowing ? " section--08-wolf-evil--hidden" : ""}`}
+            src="/img/Section07/evil_wolf.png"
+            alt="Lobo feroz acercandose"
+            draggable={false}
+          />
+          <img
+            className={`section--08-wolf-blowing${wolfIsBlowing ? " section--08-wolf-blowing--visible" : ""}`}
+            src="/img/Section08/wolf_blowing.png"
+            alt="Lobo soplando"
+            draggable={false}
+          />
+        </div>
         <img
-          className="section--08-house"
-          src="/img/Section08/wood_house.png"
+          className={`section--08-house${isBlowing ? " section--08-house--destroyed" : ""}${
+            hideHouse ? " section--08-house--hidden" : ""
+          }${impactMotion && sceneStep === 1 ? " section--08-house--impact" : ""
+          }`}
+          src={isBlowing ? "/img/Section08/wood_house_destroyed.png" : "/img/Section08/wood_house.png"}
           alt="Casa de madera"
+          draggable={false}
+        />
+        <img
+          className={`section--08-pigs-surprised${showSurprisedPigs ? " section--08-pigs-surprised--visible" : ""}${
+            impactMotion && sceneStep === 2 ? " section--08-pigs-surprised--impact" : ""
+          }`}
+          src="/img/Section08/pig1_2_suprised.png"
+          alt="Cerditos sorprendidos"
           draggable={false}
         />
       </div>
