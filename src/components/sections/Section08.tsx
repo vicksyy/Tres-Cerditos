@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
 
 export default function Section08() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -42,10 +42,17 @@ export default function Section08() {
     }, 620);
   };
 
+  const handleSurprisedPigsClick = (event: MouseEvent<HTMLImageElement>) => {
+    event.stopPropagation();
+    if (sceneStep !== 2 || impactMotion) return;
+    setSceneStep(3);
+  };
+
   const isBlowing = sceneStep >= 1;
   const wolfIsBlowing = sceneStep === 1;
   const hideHouse = sceneStep >= 2;
-  const showSurprisedPigs = sceneStep >= 2;
+  const showSurprisedPigs = sceneStep === 2;
+  const showRunningPigs = sceneStep >= 3;
 
   return (
     <section ref={sectionRef} className="section section--08">
@@ -91,6 +98,13 @@ export default function Section08() {
           }`}
           src="/img/Section08/pig1_2_suprised.png"
           alt="Cerditos sorprendidos"
+          onClick={handleSurprisedPigsClick}
+          draggable={false}
+        />
+        <img
+          className={`section--08-pigs-run${showRunningPigs ? " section--08-pigs-run--active" : ""}`}
+          src="/img/Section08/pig1-2_run.png"
+          alt="Cerditos corriendo"
           draggable={false}
         />
       </div>

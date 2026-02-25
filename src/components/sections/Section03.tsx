@@ -51,6 +51,7 @@ export default function Section03() {
   const revealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dustTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fallbackNudgeDirectionRef = useRef<1 | -1>(1);
   const [fadeInStep, setFadeInStep] = useState<number | null>(null);
 
   const handleBuildClick = () => {
@@ -93,8 +94,9 @@ export default function Section03() {
     const distance = Math.hypot(dx, dy);
 
     if (distance < 1) {
-      dx = Math.random() > 0.5 ? 1 : -1;
-      dy = Math.random() > 0.5 ? 1 : -1;
+      dx = fallbackNudgeDirectionRef.current;
+      dy = -fallbackNudgeDirectionRef.current;
+      fallbackNudgeDirectionRef.current = fallbackNudgeDirectionRef.current === 1 ? -1 : 1;
     } else {
       dx /= distance;
       dy /= distance;
@@ -303,7 +305,7 @@ export default function Section03() {
           onClick={handleBuildClick}
           aria-label="Construir casa de paja"
         >
-          <div className="section--03-house" aria-live="polite">
+          <span className="section--03-house" aria-live="polite">
             {houseStep === 1 ? (
               <img
                 className={`section--03-house-final section--03-house-layer section--03-house-layer--visible${
@@ -335,11 +337,11 @@ export default function Section03() {
               />
             ) : null}
             {showDust ? (
-              <div className="section--03-dust" aria-hidden="true">
+              <span className="section--03-dust" aria-hidden="true">
                 <img className="section--03-dust-img" src="/img/Section03/dust.png" alt="" draggable={false} />
-              </div>
+              </span>
             ) : null}
-          </div>
+          </span>
         </button>
       </div>
     </section>

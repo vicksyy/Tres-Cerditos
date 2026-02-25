@@ -147,7 +147,7 @@ export default function Section04() {
           onClick={handleBuildClick}
           aria-label="Construir casa de madera"
         >
-          <div className="section--04-house" aria-live="polite">
+          <span className="section--04-house" aria-live="polite">
             {houseStep === 1 ? (
               <img
                 className={`section--04-house-layer section--04-house-base section--04-house-layer--visible${
@@ -179,11 +179,11 @@ export default function Section04() {
               />
             ) : null}
             {showDust ? (
-              <div className="section--04-dust" aria-hidden="true">
+              <span className="section--04-dust" aria-hidden="true">
                 <img className="section--04-dust-img" src="/img/Section04/dust.png" alt="" draggable={false} />
-              </div>
+              </span>
             ) : null}
-          </div>
+          </span>
         </button>
       </div>
     </section>

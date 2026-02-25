@@ -79,7 +79,7 @@ export default function Section05() {
           onClick={handleBuildClick}
           aria-label="Construir casa de ladrillo"
         >
-          <div className="section--05-house" aria-live="polite">
+          <span className="section--05-house" aria-live="polite">
             {houseStep === 1 ? (
               <img
                 className={`section--05-house-layer section--05-house-step1 section--05-house-layer--visible${
@@ -111,11 +111,11 @@ export default function Section05() {
               />
             ) : null}
             {showDust ? (
-              <div className="section--05-dust" aria-hidden="true">
+              <span className="section--05-dust" aria-hidden="true">
                 <img className="section--05-dust-img" src="/img/Section04/dust.png" alt="" draggable={false} />
-              </div>
+              </span>
             ) : null}
-          </div>
+          </span>
         </button>
       </div>
     </section>
