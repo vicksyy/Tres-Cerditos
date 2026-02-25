@@ -4,23 +4,34 @@ import { type MouseEvent, useEffect, useRef, useState } from "react";
 
 type StrawId = "left" | "farLeft";
 
-type StrawState = {
+interface StrawState {
   id: StrawId;
   x: number;
   y: number;
   vx: number;
   vy: number;
   rotation: number;
-};
+}
 
-const STRAW_ANCHORS: Record<StrawId, { x: number; y: number; rotation: number }> = {
+interface StrawAnchor {
+  x: number;
+  y: number;
+  rotation: number;
+}
+
+interface StrawRenderSize {
+  width: number;
+  height: number;
+}
+
+const STRAW_ANCHORS: Record<StrawId, StrawAnchor> = {
   left: { x: 0.34, y: 0.74, rotation: -8 },
   farLeft: { x: 0.11, y: 0.64, rotation: 10 },
 };
 
 const STRAW_IDS: StrawId[] = ["left", "farLeft"];
 
-function getStrawSize(viewWidth: number) {
+function getStrawSize(viewWidth: number): StrawRenderSize {
   if (viewWidth <= 900) return { width: 120, height: 78 };
   if (viewWidth <= 1200) return { width: 145, height: 94 };
   return { width: 172, height: 112 };
@@ -47,7 +58,7 @@ export default function Section03() {
 
   const sceneRef = useRef<HTMLDivElement | null>(null);
   const buildTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const sceneSizeRef = useRef({ width: 0, height: 0 });
+  const sceneSizeRef = useRef<StrawRenderSize>({ width: 0, height: 0 });
   const revealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dustTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);

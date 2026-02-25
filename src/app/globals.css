@@ -698,6 +698,45 @@ body {
   animation: pig-run-right-08 2200ms linear forwards;
 }
 
+.section--09-content {
+  position: relative;
+  padding: 0;
+}
+
+.section--09-wolf-stage {
+  position: absolute;
+  left: 4vw;
+  bottom: 20vh;
+  width: clamp(400px, 46vw, 680px);
+  height: auto;
+  transform: translateX(calc(-100% - 10vw));
+  user-select: none;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.section--09-wolf-stage--visible {
+  animation: wolf-enter-left 1200ms ease-out forwards;
+}
+
+.section--09-wolf-evil {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.section--09-house {
+  position: absolute;
+  right: 4vw;
+  top: 50%;
+  width: clamp(520px, 64vw, 1220px);
+  height: auto;
+  transform: translateY(-50%);
+  user-select: none;
+  pointer-events: none;
+}
+
 .section--04-build-trigger {
   position: absolute;
   left: 50%;
@@ -1019,6 +1058,17 @@ body {
     width: clamp(340px, 46vw, 560px);
   }
 
+  .section--09-house {
+    right: 3vw;
+    width: clamp(420px, 66vw, 980px);
+  }
+
+  .section--09-wolf-stage {
+    left: 3vw;
+    bottom: 18vh;
+    width: clamp(340px, 46vw, 560px);
+  }
+
   .section--03-build-trigger {
     right: 12vw;
     bottom: 38vh;
@@ -1162,6 +1212,17 @@ body {
   }
 
   .section--08-wolf-stage {
+    left: -4vw;
+    bottom: 22vh;
+    width: clamp(280px, 72vw, 500px);
+  }
+
+  .section--09-house {
+    right: 1vw;
+    width: clamp(320px, 78vw, 760px);
+  }
+
+  .section--09-wolf-stage {
     left: -4vw;
     bottom: 22vh;
     width: clamp(280px, 72vw, 500px);

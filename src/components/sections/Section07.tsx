@@ -14,7 +14,9 @@ export default function Section07() {
     if (!section) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
         if (entry.isIntersecting) {
           setWolfVisible(true);
           observer.disconnect();

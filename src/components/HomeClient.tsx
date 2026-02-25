@@ -9,6 +9,7 @@ import Section05 from "@/components/sections/Section05";
 import Section06 from "@/components/sections/Section06";
 import Section07 from "@/components/sections/Section07";
 import Section08 from "@/components/sections/Section08";
+import Section09 from "@/components/sections/Section09";
 
 export default function HomeClient() {
   const mainRef = useRef<HTMLElement | null>(null);
@@ -26,7 +27,7 @@ export default function HomeClient() {
         return;
       }
 
-      const match = /^(?:Digit|Numpad)([1-8])$/.exec(event.code);
+      const match = /^(?:Digit|Numpad)([1-9])$/.exec(event.code);
       const keyNumber = match ? Number(match[1]) : null;
       if (!keyNumber) return;
 
@@ -55,6 +56,7 @@ export default function HomeClient() {
       <Section06 />
       <Section07 />
       <Section08 />
+      <Section09 />
     </main>
   );
 }

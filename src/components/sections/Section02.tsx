@@ -4,7 +4,18 @@ import { useRef, useState } from "react";
 
 type PigId = "pig1" | "pig2" | "pig3";
 
-type PigState = Record<PigId, boolean>;
+interface PigState {
+  pig1: boolean;
+  pig2: boolean;
+  pig3: boolean;
+}
+
+interface PigDefinition {
+  id: PigId;
+  idle: string;
+  walk: string;
+  alt: string;
+}
 
 const initialState: PigState = {
   pig1: false,
@@ -12,7 +23,7 @@ const initialState: PigState = {
   pig3: false,
 };
 
-const pigs = [
+const pigs: PigDefinition[] = [
   {
     id: "pig1" as const,
     idle: "/img/Section02/pig1_goodbye.png",

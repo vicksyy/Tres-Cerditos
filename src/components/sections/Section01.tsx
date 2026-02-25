@@ -4,7 +4,18 @@ import { useRef, useState, type CSSProperties } from "react";
 
 type PigId = "pig1" | "pig2" | "pig3";
 
-type PigState = Record<PigId, boolean>;
+interface PigState {
+  pig1: boolean;
+  pig2: boolean;
+  pig3: boolean;
+}
+
+interface PigDefinition {
+  id: PigId;
+  idle: string;
+  wave: string;
+  alt: string;
+}
 
 const initialState: PigState = {
   pig1: false,
@@ -12,7 +23,7 @@ const initialState: PigState = {
   pig3: false,
 };
 
-const pigs = [
+const pigs: PigDefinition[] = [
   {
     id: "pig1" as const,
     idle: "/img/Section01/pig1_idle.png",
@@ -35,9 +46,20 @@ const pigs = [
 
 type LeafId = "leaf1" | "leaf2" | "leaf3";
 
-type LeafState = Record<LeafId, boolean>;
+interface LeafState {
+  leaf1: boolean;
+  leaf2: boolean;
+  leaf3: boolean;
+}
 
-const leaves = [
+interface LeafDefinition {
+  id: LeafId;
+  top: string;
+  duration: string;
+  delay: string;
+}
+
+const leaves: LeafDefinition[] = [
   { id: "leaf1" as const, top: "9vh", duration: "28s", delay: "0s" },
   { id: "leaf2" as const, top: "18vh", duration: "33s", delay: "6s" },
   { id: "leaf3" as const, top: "30vh", duration: "31s", delay: "12s" },

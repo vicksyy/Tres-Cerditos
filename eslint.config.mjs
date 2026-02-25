@@ -5,6 +5,13 @@ import nextTypeScript from "eslint-config-next/typescript";
 export default defineConfig([
   ...nextVitals,
   ...nextTypeScript,
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "error",
+      "prefer-const": "error",
+    },
+  },
   globalIgnores([
     ".next/**",
     "out/**",
