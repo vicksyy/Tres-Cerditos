@@ -10,6 +10,7 @@ import Section06 from "@/components/sections/Section06";
 import Section07 from "@/components/sections/Section07";
 import Section08 from "@/components/sections/Section08";
 import Section09 from "@/components/sections/Section09";
+import Section10 from "@/components/sections/Section10";
 
 export default function HomeClient() {
   const mainRef = useRef<HTMLElement | null>(null);
@@ -57,6 +58,7 @@ export default function HomeClient() {
       <Section07 />
       <Section08 />
       <Section09 />
+      <Section10 />
     </main>
   );
 }

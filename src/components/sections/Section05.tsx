@@ -7,10 +7,18 @@ export default function Section05() {
   const [houseStep, setHouseStep] = useState(0);
   const [showDust, setShowDust] = useState(false);
   const [fadeInStep, setFadeInStep] = useState<number | null>(null);
+  const [showHappyPig, setShowHappyPig] = useState(false);
 
   const revealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dustTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const happyPigTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleStartScene = () => {
+    if (!showWorkPig) {
+      setShowWorkPig(true);
+    }
+  };
 
   const handleBuildClick = () => {
     if (!showWorkPig || showDust || houseStep >= 3) {
@@ -28,6 +36,13 @@ export default function Section05() {
       setHouseStep(nextStep);
       setFadeInStep(nextStep);
       fadeTimeoutRef.current = setTimeout(() => setFadeInStep(null), 700);
+
+      if (nextStep === 3) {
+        if (happyPigTimeoutRef.current) clearTimeout(happyPigTimeoutRef.current);
+        happyPigTimeoutRef.current = setTimeout(() => {
+          setShowHappyPig(true);
+        }, 700);
+      }
     }, 1200);
 
     dustTimeoutRef.current = setTimeout(() => {
@@ -40,6 +55,7 @@ export default function Section05() {
       if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
       if (dustTimeoutRef.current) clearTimeout(dustTimeoutRef.current);
       if (fadeTimeoutRef.current) clearTimeout(fadeTimeoutRef.current);
+      if (happyPigTimeoutRef.current) clearTimeout(happyPigTimeoutRef.current);
     };
   }, []);
 
@@ -52,7 +68,12 @@ export default function Section05() {
         }}
         aria-hidden="true"
       />
-      <div className="section-content section--05-content" role="group" aria-label="Escena 5">
+      <div
+        className="section-content section--05-content"
+        role="group"
+        aria-label="Escena 5"
+        onPointerDown={handleStartScene}
+      >
         <button
           type="button"
           className={`section--05-pig-trigger${showWorkPig ? " section--05-pig-trigger--hidden" : ""}`}
@@ -67,10 +88,18 @@ export default function Section05() {
           />
         </button>
         <img
-          className={`section--05-pig-work${showWorkPig ? " section--05-pig-work--visible" : ""}`}
+          className={`section--05-pig-work${
+            showWorkPig && !showHappyPig ? " section--05-pig-work--visible" : ""
+          }`}
           src="/img/Section05/pig3_work.png"
           alt="Cerdito 3 trabajando"
           onClick={handleBuildClick}
+          draggable={false}
+        />
+        <img
+          className={`section--05-pig-happy${showHappyPig ? " section--05-pig-happy--visible" : ""}`}
+          src="/img/Section05/pig3_happy.png"
+          alt="Cerdito 3 feliz"
           draggable={false}
         />
         <button

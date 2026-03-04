@@ -339,7 +339,8 @@ body {
   user-select: none;
 }
 
-.section--05-pig-work {
+.section--05-pig-work,
+.section--05-pig-happy {
   position: absolute;
   left: 8vw;
   bottom: 18vh;
@@ -349,11 +350,22 @@ body {
   opacity: 0;
   transition: opacity 800ms ease-in-out;
   user-select: none;
-  cursor: pointer;
   z-index: 3;
 }
 
 .section--05-pig-work--visible {
+  opacity: 1;
+}
+
+.section--05-pig-work {
+  cursor: pointer;
+}
+
+.section--05-pig-happy {
+  pointer-events: none;
+}
+
+.section--05-pig-happy--visible {
   opacity: 1;
 }
 
@@ -393,7 +405,7 @@ body {
 .section--05-house-layer {
   position: absolute;
   left: 8%;
-  bottom: 0;
+  bottom: -10%;
   width: 160%;
   height: auto;
   opacity: 0;
@@ -402,7 +414,7 @@ body {
 }
 
 .section--05-house-step1 {
-  bottom: -8%;
+  bottom: -18%;
 }
 
 .section--05-house-layer--visible {
@@ -490,7 +502,7 @@ body {
 
 .section--07-wolf-evil {
   opacity: 1;
-  transition: opacity 360ms ease;
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .section--07-wolf-evil--hidden {
@@ -501,11 +513,15 @@ body {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 420ms ease;
+  transform: translateY(4px) scale(0.99);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .section--07-wolf-blowing--visible {
   opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .section--07-house {
@@ -703,12 +719,17 @@ body {
   padding: 0;
 }
 
+.section--09-content--interactive {
+  cursor: pointer;
+}
+
 .section--09-wolf-stage {
   position: absolute;
   left: 4vw;
   bottom: 20vh;
   width: clamp(400px, 46vw, 680px);
   height: auto;
+  display: grid;
   transform: translateX(calc(-100% - 10vw));
   user-select: none;
   pointer-events: none;
@@ -719,11 +740,22 @@ body {
   animation: wolf-enter-left 1200ms ease-out forwards;
 }
 
-.section--09-wolf-evil {
+.section--09-wolf-img {
+  grid-area: 1 / 1;
   display: block;
   width: 100%;
   height: auto;
+  opacity: 0;
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1);
   user-select: none;
+}
+
+.section--09-wolf-img--visible {
+  opacity: 1;
+}
+
+.section--09-wolf-img--walking-out {
+  animation: section-09-wolf-walk-out 3400ms linear forwards;
 }
 
 .section--09-house {
@@ -735,6 +767,14 @@ body {
   transform: translateY(-50%);
   user-select: none;
   pointer-events: none;
+}
+
+.section--09-house--impact-a {
+  animation: section-09-house-impact-a 320ms ease-out both;
+}
+
+.section--09-house--impact-b {
+  animation: section-09-house-impact-b 320ms ease-out both;
 }
 
 .section--04-build-trigger {
@@ -896,13 +936,13 @@ body {
 }
 
 .section--04-tool--hammer {
-  left: 49%;
-  bottom: 8.4vh;
+  left: 53%;
+  bottom: 7.6vh;
 }
 
 .section--04-tool--nail {
-  left: 69%;
-  bottom: 12vh;
+  left: 73%;
+  bottom: 11.2vh;
 }
 
 .section--04-tool-img {
@@ -982,6 +1022,75 @@ body {
   }
   100% {
     transform: translateX(0);
+  }
+}
+
+@keyframes section-09-house-impact-a {
+  0% {
+    transform: translateY(-50%) translateX(0) rotate(0deg);
+  }
+  35% {
+    transform: translateY(-50%) translateX(-0.35vw) rotate(-0.35deg);
+  }
+  70% {
+    transform: translateY(-50%) translateX(0.25vw) rotate(0.25deg);
+  }
+  100% {
+    transform: translateY(-50%) translateX(0) rotate(0deg);
+  }
+}
+
+@keyframes section-09-house-impact-b {
+  0% {
+    transform: translateY(-50%) translateX(0) rotate(0deg);
+  }
+  35% {
+    transform: translateY(-50%) translateX(0.35vw) rotate(0.35deg);
+  }
+  70% {
+    transform: translateY(-50%) translateX(-0.25vw) rotate(-0.25deg);
+  }
+  100% {
+    transform: translateY(-50%) translateX(0) rotate(0deg);
+  }
+}
+
+@keyframes section-09-wolf-walk-out {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  12% {
+    transform: translateX(14vw) translateY(-0.45vh) rotate(-0.6deg);
+    opacity: 1;
+  }
+  25% {
+    transform: translateX(28vw) translateY(0) rotate(0.6deg);
+    opacity: 1;
+  }
+  37% {
+    transform: translateX(42vw) translateY(-0.45vh) rotate(-0.6deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(56vw) translateY(0) rotate(0.6deg);
+    opacity: 1;
+  }
+  62% {
+    transform: translateX(72vw) translateY(-0.45vh) rotate(-0.6deg);
+    opacity: 1;
+  }
+  75% {
+    transform: translateX(88vw) translateY(0) rotate(0.6deg);
+    opacity: 1;
+  }
+  88% {
+    transform: translateX(104vw) translateY(-0.45vh) rotate(-0.6deg);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateX(122vw) translateY(0) rotate(0deg);
+    opacity: 0;
   }
 }
 
@@ -1098,6 +1207,10 @@ body {
   .section-content {
     gap: 0;
     padding: 8vh 4vw 18vh;
+  }
+
+  .section--04-content {
+    padding: 0;
   }
 
   .pig-btn {
@@ -1271,7 +1384,8 @@ body {
     right: 4vw;
   }
 
-  .section--05-pig-work {
+  .section--05-pig-work,
+  .section--05-pig-happy {
     left: 5vw;
     bottom: 22vh;
     width: clamp(300px, 68vw, 500px);
@@ -1289,7 +1403,7 @@ body {
   }
 
   .section--05-house-step1 {
-    bottom: -10%;
+    bottom: -20%;
   }
 
   .section--05-dust {
@@ -1308,13 +1422,13 @@ body {
   }
 
   .section--04-tool--hammer {
-    left: 42%;
-    bottom: 9.4vh;
+    left: 48%;
+    bottom: 8.6vh;
   }
 
   .section--04-tool--nail {
-    left: 77%;
-    bottom: 13vh;
+    left: 81%;
+    bottom: 12.2vh;
   }
 
   .section--04-tool-img {
