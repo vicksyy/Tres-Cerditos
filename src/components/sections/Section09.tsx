@@ -7,7 +7,9 @@ export default function Section09() {
   const [wolfVisible, setWolfVisible] = useState(false);
   const [wolfPoseStep, setWolfPoseStep] = useState(0);
   const houseImpactTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const previewTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [houseImpactVariant, setHouseImpactVariant] = useState<0 | 1 | 2>(0);
+  const [previewState, setPreviewState] = useState<"pending" | "visible" | "hiding" | "done">("pending");
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -32,10 +34,31 @@ export default function Section09() {
   useEffect(() => {
     return () => {
       if (houseImpactTimeoutRef.current) clearTimeout(houseImpactTimeoutRef.current);
+      if (previewTimeoutRef.current) clearTimeout(previewTimeoutRef.current);
     };
   }, []);
 
   const handleSceneClick = () => {
+    if (!wolfVisible) return;
+
+    if (previewState === "pending") {
+      setPreviewState("visible");
+      return;
+    }
+
+    if (previewState === "visible") {
+      setPreviewState("hiding");
+      if (previewTimeoutRef.current) clearTimeout(previewTimeoutRef.current);
+      previewTimeoutRef.current = setTimeout(() => {
+        setPreviewState("done");
+      }, 520);
+      return;
+    }
+
+    if (previewState === "hiding") {
+      return;
+    }
+
     setWolfPoseStep((prev) => {
       if (prev >= 4) return prev;
       const next = prev + 1;
@@ -99,6 +122,16 @@ export default function Section09() {
           alt="Casa de ladrillo"
           draggable={false}
         />
+        {previewState !== "done" ? (
+          <img
+            className={`section--09-preview${
+              previewState === "visible" ? " section--09-preview--visible" : ""
+            }${previewState === "hiding" ? " section--09-preview--hiding" : ""}`}
+            src="/img/Section09/pigs_scared.png"
+            alt="Cerditos asustados dentro de la casa"
+            draggable={false}
+          />
+        ) : null}
       </div>
     </section>
   );
