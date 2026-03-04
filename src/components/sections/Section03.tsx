@@ -136,7 +136,7 @@ export default function Section03() {
 
       const rect = scene.getBoundingClientRect();
       const previous = sceneSizeRef.current;
-      const size = getStrawSize(window.innerWidth);
+      const size = getStrawSize(rect.width);
       setStrawRenderSize(size);
 
       setStraws((prev) => {
@@ -185,7 +185,7 @@ export default function Section03() {
 
       const rect = scene.getBoundingClientRect();
       const houseRect = buildTriggerRef.current?.getBoundingClientRect();
-      const size = getStrawSize(window.innerWidth);
+      const size = getStrawSize(rect.width);
       const minY = rect.height * 0.5;
       const maxY = rect.height - size.height;
       const obstacle = houseRect
