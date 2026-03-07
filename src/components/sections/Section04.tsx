@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export default function Section04() {
+interface Section04Props {
+  effectsEnabled: boolean;
+}
+
+export default function Section04({ effectsEnabled }: Section04Props) {
   const [houseStep, setHouseStep] = useState(0);
   const [showDust, setShowDust] = useState(false);
   const [fadeInStep, setFadeInStep] = useState<number | null>(null);
@@ -15,6 +19,30 @@ export default function Section04() {
   const dustTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const workingSwitchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hammerSoundRef = useRef<HTMLAudioElement | null>(null);
+  const sparkleSoundRef = useRef<HTMLAudioElement | null>(null);
+
+  const playHammerSound = () => {
+    if (!effectsEnabled) return;
+    if (!hammerSoundRef.current) {
+      hammerSoundRef.current = new Audio("/sounds/Martilleo.mp3");
+      hammerSoundRef.current.preload = "auto";
+      hammerSoundRef.current.volume = 0.6;
+    }
+    hammerSoundRef.current.currentTime = 0;
+    void hammerSoundRef.current.play().catch(() => {});
+  };
+
+  const playSparkleSound = () => {
+    if (!effectsEnabled) return;
+    if (!sparkleSoundRef.current) {
+      sparkleSoundRef.current = new Audio("/sounds/sparkle.mp3");
+      sparkleSoundRef.current.preload = "auto";
+      sparkleSoundRef.current.volume = 0.7;
+    }
+    sparkleSoundRef.current.currentTime = 0;
+    void sparkleSoundRef.current.play().catch(() => {});
+  };
 
   const handleBuildClick = () => {
     if (showDust || houseStep >= 3) {
@@ -23,6 +51,7 @@ export default function Section04() {
 
     const nextStep = houseStep + 1;
     setShowDust(true);
+    playHammerSound();
 
     if (houseStep === 1 && !workingOnLeft) {
       setSwitchingWorkingSide(true);
@@ -48,6 +77,9 @@ export default function Section04() {
     revealTimeoutRef.current = setTimeout(() => {
       setHouseStep(nextStep);
       setFadeInStep(nextStep);
+      if (nextStep === 3) {
+        playSparkleSound();
+      }
       fadeTimeoutRef.current = setTimeout(() => setFadeInStep(null), 700);
     }, 1200);
 
@@ -62,8 +94,28 @@ export default function Section04() {
       if (dustTimeoutRef.current) clearTimeout(dustTimeoutRef.current);
       if (fadeTimeoutRef.current) clearTimeout(fadeTimeoutRef.current);
       if (workingSwitchTimeoutRef.current) clearTimeout(workingSwitchTimeoutRef.current);
+      if (hammerSoundRef.current) {
+        hammerSoundRef.current.pause();
+        hammerSoundRef.current.currentTime = 0;
+      }
+      if (sparkleSoundRef.current) {
+        sparkleSoundRef.current.pause();
+        sparkleSoundRef.current.currentTime = 0;
+      }
     };
   }, []);
+
+  useEffect(() => {
+    if (effectsEnabled) return;
+    if (hammerSoundRef.current) {
+      hammerSoundRef.current.pause();
+      hammerSoundRef.current.currentTime = 0;
+    }
+    if (sparkleSoundRef.current) {
+      sparkleSoundRef.current.pause();
+      sparkleSoundRef.current.currentTime = 0;
+    }
+  }, [effectsEnabled]);
 
   const hasStartedBuild = houseStep > 0 || showDust;
   const showWorkingPig = hasStartedBuild && houseStep < 3;

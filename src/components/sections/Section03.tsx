@@ -41,7 +41,11 @@ function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-export default function Section03() {
+interface Section03Props {
+  effectsEnabled: boolean;
+}
+
+export default function Section03({ effectsEnabled }: Section03Props) {
   const [houseStep, setHouseStep] = useState(0);
   const [showDust, setShowDust] = useState(false);
   const [strawRenderSize, setStrawRenderSize] = useState(() => getStrawSize(1280));
@@ -62,8 +66,32 @@ export default function Section03() {
   const revealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dustTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hammerSoundRef = useRef<HTMLAudioElement | null>(null);
+  const sparkleSoundRef = useRef<HTMLAudioElement | null>(null);
   const fallbackNudgeDirectionRef = useRef<1 | -1>(1);
   const [fadeInStep, setFadeInStep] = useState<number | null>(null);
+
+  const playHammerSound = () => {
+    if (!effectsEnabled) return;
+    if (!hammerSoundRef.current) {
+      hammerSoundRef.current = new Audio("/sounds/Martilleo.mp3");
+      hammerSoundRef.current.preload = "auto";
+      hammerSoundRef.current.volume = 0.6;
+    }
+    hammerSoundRef.current.currentTime = 0;
+    void hammerSoundRef.current.play().catch(() => {});
+  };
+
+  const playSparkleSound = () => {
+    if (!effectsEnabled) return;
+    if (!sparkleSoundRef.current) {
+      sparkleSoundRef.current = new Audio("/sounds/sparkle.mp3");
+      sparkleSoundRef.current.preload = "auto";
+      sparkleSoundRef.current.volume = 0.7;
+    }
+    sparkleSoundRef.current.currentTime = 0;
+    void sparkleSoundRef.current.play().catch(() => {});
+  };
 
   const handleBuildClick = () => {
     if (showDust || houseStep >= 3) {
@@ -72,6 +100,7 @@ export default function Section03() {
 
     const nextStep = houseStep + 1;
     setShowDust(true);
+    playHammerSound();
 
     if (revealTimeoutRef.current) {
       clearTimeout(revealTimeoutRef.current);
@@ -86,6 +115,9 @@ export default function Section03() {
     revealTimeoutRef.current = setTimeout(() => {
       setHouseStep(nextStep);
       setFadeInStep(nextStep);
+      if (nextStep === 3) {
+        playSparkleSound();
+      }
       fadeTimeoutRef.current = setTimeout(() => setFadeInStep(null), 700);
     }, 1200);
 
@@ -273,8 +305,28 @@ export default function Section03() {
       if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
       if (dustTimeoutRef.current) clearTimeout(dustTimeoutRef.current);
       if (fadeTimeoutRef.current) clearTimeout(fadeTimeoutRef.current);
+      if (hammerSoundRef.current) {
+        hammerSoundRef.current.pause();
+        hammerSoundRef.current.currentTime = 0;
+      }
+      if (sparkleSoundRef.current) {
+        sparkleSoundRef.current.pause();
+        sparkleSoundRef.current.currentTime = 0;
+      }
     };
   }, []);
+
+  useEffect(() => {
+    if (effectsEnabled) return;
+    if (hammerSoundRef.current) {
+      hammerSoundRef.current.pause();
+      hammerSoundRef.current.currentTime = 0;
+    }
+    if (sparkleSoundRef.current) {
+      sparkleSoundRef.current.pause();
+      sparkleSoundRef.current.currentTime = 0;
+    }
+  }, [effectsEnabled]);
 
   return (
     <section className="section section--03">

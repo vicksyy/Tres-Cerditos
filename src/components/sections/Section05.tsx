@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export default function Section05() {
+interface Section05Props {
+  effectsEnabled: boolean;
+}
+
+export default function Section05({ effectsEnabled }: Section05Props) {
   const [showWorkPig, setShowWorkPig] = useState(false);
   const [houseStep, setHouseStep] = useState(0);
   const [showDust, setShowDust] = useState(false);
@@ -13,6 +17,30 @@ export default function Section05() {
   const dustTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const happyPigTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hammerSoundRef = useRef<HTMLAudioElement | null>(null);
+  const sparkleSoundRef = useRef<HTMLAudioElement | null>(null);
+
+  const playHammerSound = () => {
+    if (!effectsEnabled) return;
+    if (!hammerSoundRef.current) {
+      hammerSoundRef.current = new Audio("/sounds/Martilleo.mp3");
+      hammerSoundRef.current.preload = "auto";
+      hammerSoundRef.current.volume = 0.6;
+    }
+    hammerSoundRef.current.currentTime = 0;
+    void hammerSoundRef.current.play().catch(() => {});
+  };
+
+  const playSparkleSound = () => {
+    if (!effectsEnabled) return;
+    if (!sparkleSoundRef.current) {
+      sparkleSoundRef.current = new Audio("/sounds/sparkle.mp3");
+      sparkleSoundRef.current.preload = "auto";
+      sparkleSoundRef.current.volume = 0.7;
+    }
+    sparkleSoundRef.current.currentTime = 0;
+    void sparkleSoundRef.current.play().catch(() => {});
+  };
 
   const handleStartScene = () => {
     if (!showWorkPig) {
@@ -27,6 +55,7 @@ export default function Section05() {
 
     const nextStep = houseStep + 1;
     setShowDust(true);
+    playHammerSound();
 
     if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
     if (dustTimeoutRef.current) clearTimeout(dustTimeoutRef.current);
@@ -35,14 +64,11 @@ export default function Section05() {
     revealTimeoutRef.current = setTimeout(() => {
       setHouseStep(nextStep);
       setFadeInStep(nextStep);
-      fadeTimeoutRef.current = setTimeout(() => setFadeInStep(null), 700);
-
       if (nextStep === 3) {
-        if (happyPigTimeoutRef.current) clearTimeout(happyPigTimeoutRef.current);
-        happyPigTimeoutRef.current = setTimeout(() => {
-          setShowHappyPig(true);
-        }, 700);
+        playSparkleSound();
+        setShowHappyPig(true);
       }
+      fadeTimeoutRef.current = setTimeout(() => setFadeInStep(null), 700);
     }, 1200);
 
     dustTimeoutRef.current = setTimeout(() => {
@@ -56,8 +82,28 @@ export default function Section05() {
       if (dustTimeoutRef.current) clearTimeout(dustTimeoutRef.current);
       if (fadeTimeoutRef.current) clearTimeout(fadeTimeoutRef.current);
       if (happyPigTimeoutRef.current) clearTimeout(happyPigTimeoutRef.current);
+      if (hammerSoundRef.current) {
+        hammerSoundRef.current.pause();
+        hammerSoundRef.current.currentTime = 0;
+      }
+      if (sparkleSoundRef.current) {
+        sparkleSoundRef.current.pause();
+        sparkleSoundRef.current.currentTime = 0;
+      }
     };
   }, []);
+
+  useEffect(() => {
+    if (effectsEnabled) return;
+    if (hammerSoundRef.current) {
+      hammerSoundRef.current.pause();
+      hammerSoundRef.current.currentTime = 0;
+    }
+    if (sparkleSoundRef.current) {
+      sparkleSoundRef.current.pause();
+      sparkleSoundRef.current.currentTime = 0;
+    }
+  }, [effectsEnabled]);
 
   return (
     <section className="section section--05">

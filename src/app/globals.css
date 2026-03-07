@@ -39,6 +39,81 @@ body {
   height: 0;
 }
 
+.audio-controls {
+  position: fixed;
+  top: clamp(12px, 2.4vh, 22px);
+  right: clamp(12px, 2.4vw, 22px);
+  z-index: 30;
+  display: flex;
+  gap: 10px;
+}
+
+.audio-control-btn {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(16, 24, 40, 0.18);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #111827;
+  cursor: pointer;
+  transition: transform 180ms ease, background-color 180ms ease, color 180ms ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.audio-control-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.audio-control-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  padding: 6px 9px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #0f172a;
+  border: 1px solid rgba(16, 24, 40, 0.16);
+  font-size: 12px;
+  line-height: 1.15;
+  text-align: center;
+  white-space: pre-line;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -2px);
+  transition: opacity 160ms ease, transform 160ms ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.audio-control-btn:hover::after,
+.audio-control-btn:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.audio-control-btn:focus-visible {
+  outline: 3px solid #111827;
+  outline-offset: 2px;
+}
+
+.audio-control-btn--off {
+  color: #6b7280;
+  background: rgba(255, 255, 255, 0.38);
+}
+
+.audio-control-btn:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .section {
   position: relative;
   width: 100vw;

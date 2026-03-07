@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 type PigId = "pig1" | "pig2" | "pig3";
 
@@ -72,13 +72,24 @@ const initialLeafState: LeafState = {
 };
 const PIG_OINK_RATE = 1.5;
 
-export default function Section01() {
+interface Section01Props {
+  effectsEnabled: boolean;
+}
+
+export default function Section01({ effectsEnabled }: Section01Props) {
   const [active, setActive] = useState<PigState>(initialState);
   const [leafShifted, setLeafShifted] = useState<LeafState>(initialLeafState);
   const ignoreClickRef = useRef(false);
   const pigSoundRef = useRef<HTMLAudioElement | null>(null);
 
+  useEffect(() => {
+    if (effectsEnabled || !pigSoundRef.current) return;
+    pigSoundRef.current.pause();
+    pigSoundRef.current.currentTime = 0;
+  }, [effectsEnabled]);
+
   const playPigSound = () => {
+    if (!effectsEnabled) return;
     if (!pigSoundRef.current) {
       pigSoundRef.current = new Audio("/sounds/pig_oink.mp3");
       pigSoundRef.current.preload = "auto";
