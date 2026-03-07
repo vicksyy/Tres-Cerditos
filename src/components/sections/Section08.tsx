@@ -2,12 +2,40 @@
 
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 
-export default function Section08() {
+interface Section08Props {
+  effectsEnabled: boolean;
+}
+
+export default function Section08({ effectsEnabled }: Section08Props) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const destroyMotionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wolfBlowSoundRef = useRef<HTMLAudioElement | null>(null);
+  const houseExplosionSoundRef = useRef<HTMLAudioElement | null>(null);
   const [wolfVisible, setWolfVisible] = useState(false);
   const [sceneStep, setSceneStep] = useState(0);
   const [impactMotion, setImpactMotion] = useState(false);
+
+  const playWolfBlowSound = () => {
+    if (!effectsEnabled) return;
+    if (!wolfBlowSoundRef.current) {
+      wolfBlowSoundRef.current = new Audio("/sounds/lobo-soplo.mp3");
+      wolfBlowSoundRef.current.preload = "auto";
+      wolfBlowSoundRef.current.volume = 0.75;
+    }
+    wolfBlowSoundRef.current.currentTime = 0;
+    void wolfBlowSoundRef.current.play().catch(() => {});
+  };
+
+  const playHouseExplosionSound = () => {
+    if (!effectsEnabled) return;
+    if (!houseExplosionSoundRef.current) {
+      houseExplosionSoundRef.current = new Audio("/sounds/casa-madera-explosion.mp3");
+      houseExplosionSoundRef.current.preload = "auto";
+      houseExplosionSoundRef.current.volume = 0.8;
+    }
+    houseExplosionSoundRef.current.currentTime = 0;
+    void houseExplosionSoundRef.current.play().catch(() => {});
+  };
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -32,12 +60,39 @@ export default function Section08() {
   useEffect(() => {
     return () => {
       if (destroyMotionTimeoutRef.current) clearTimeout(destroyMotionTimeoutRef.current);
+      if (wolfBlowSoundRef.current) {
+        wolfBlowSoundRef.current.pause();
+        wolfBlowSoundRef.current.currentTime = 0;
+      }
+      if (houseExplosionSoundRef.current) {
+        houseExplosionSoundRef.current.pause();
+        houseExplosionSoundRef.current.currentTime = 0;
+      }
     };
   }, []);
 
+  useEffect(() => {
+    if (effectsEnabled) return;
+    if (wolfBlowSoundRef.current) {
+      wolfBlowSoundRef.current.pause();
+      wolfBlowSoundRef.current.currentTime = 0;
+    }
+    if (houseExplosionSoundRef.current) {
+      houseExplosionSoundRef.current.pause();
+      houseExplosionSoundRef.current.currentTime = 0;
+    }
+  }, [effectsEnabled]);
+
   const handleSceneClick = () => {
     if (destroyMotionTimeoutRef.current) clearTimeout(destroyMotionTimeoutRef.current);
-    setSceneStep((prev) => (prev < 2 ? prev + 1 : prev));
+    setSceneStep((prev) => {
+      const next = prev < 2 ? prev + 1 : prev;
+      if (next === 1 && prev !== 1) {
+        playWolfBlowSound();
+        playHouseExplosionSound();
+      }
+      return next;
+    });
     setImpactMotion(true);
     destroyMotionTimeoutRef.current = setTimeout(() => {
       setImpactMotion(false);

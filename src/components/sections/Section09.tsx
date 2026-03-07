@@ -2,14 +2,42 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export default function Section09() {
+interface Section09Props {
+  effectsEnabled: boolean;
+}
+
+export default function Section09({ effectsEnabled }: Section09Props) {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const wolfBlowSoundRef = useRef<HTMLAudioElement | null>(null);
+  const wolfTiredSoundRef = useRef<HTMLAudioElement | null>(null);
   const [wolfVisible, setWolfVisible] = useState(false);
   const [wolfPoseStep, setWolfPoseStep] = useState(0);
   const houseImpactTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previewTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [houseImpactVariant, setHouseImpactVariant] = useState<0 | 1 | 2>(0);
   const [previewState, setPreviewState] = useState<"pending" | "visible" | "hiding" | "done">("pending");
+
+  const playWolfBlowSound = () => {
+    if (!effectsEnabled) return;
+    if (!wolfBlowSoundRef.current) {
+      wolfBlowSoundRef.current = new Audio("/sounds/lobo-soplo.mp3");
+      wolfBlowSoundRef.current.preload = "auto";
+      wolfBlowSoundRef.current.volume = 0.75;
+    }
+    wolfBlowSoundRef.current.currentTime = 0;
+    void wolfBlowSoundRef.current.play().catch(() => {});
+  };
+
+  const playWolfTiredSound = () => {
+    if (!effectsEnabled) return;
+    if (!wolfTiredSoundRef.current) {
+      wolfTiredSoundRef.current = new Audio("/sounds/lobo-cansado.mp3");
+      wolfTiredSoundRef.current.preload = "auto";
+      wolfTiredSoundRef.current.volume = 0.8;
+    }
+    wolfTiredSoundRef.current.currentTime = 0;
+    void wolfTiredSoundRef.current.play().catch(() => {});
+  };
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -35,8 +63,28 @@ export default function Section09() {
     return () => {
       if (houseImpactTimeoutRef.current) clearTimeout(houseImpactTimeoutRef.current);
       if (previewTimeoutRef.current) clearTimeout(previewTimeoutRef.current);
+      if (wolfBlowSoundRef.current) {
+        wolfBlowSoundRef.current.pause();
+        wolfBlowSoundRef.current.currentTime = 0;
+      }
+      if (wolfTiredSoundRef.current) {
+        wolfTiredSoundRef.current.pause();
+        wolfTiredSoundRef.current.currentTime = 0;
+      }
     };
   }, []);
+
+  useEffect(() => {
+    if (effectsEnabled) return;
+    if (wolfBlowSoundRef.current) {
+      wolfBlowSoundRef.current.pause();
+      wolfBlowSoundRef.current.currentTime = 0;
+    }
+    if (wolfTiredSoundRef.current) {
+      wolfTiredSoundRef.current.pause();
+      wolfTiredSoundRef.current.currentTime = 0;
+    }
+  }, [effectsEnabled]);
 
   const handleSceneClick = () => {
     if (!wolfVisible) return;
@@ -62,6 +110,12 @@ export default function Section09() {
     setWolfPoseStep((prev) => {
       if (prev >= 4) return prev;
       const next = prev + 1;
+      if (next === 1 || next === 2) {
+        playWolfBlowSound();
+      }
+      if (next === 3 || next === 4) {
+        playWolfTiredSound();
+      }
       if (next < 4) {
         setHouseImpactVariant((variant) => (variant === 1 ? 2 : 1));
         if (houseImpactTimeoutRef.current) clearTimeout(houseImpactTimeoutRef.current);

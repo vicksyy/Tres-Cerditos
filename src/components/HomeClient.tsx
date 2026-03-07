@@ -15,16 +15,16 @@ import Section10 from "@/components/sections/Section10";
 
 export default function HomeClient() {
   const mainRef = useRef<HTMLElement | null>(null);
-  const bgAudioRef = useRef<HTMLAudioElement | null>(null);
-  const bgAudioStoppedRef = useRef(false);
+  const storyAudioRef = useRef<HTMLAudioElement | null>(null);
+  const dramaAudioRef = useRef<HTMLAudioElement | null>(null);
   const musicEnabledRef = useRef(true);
+  const isDramaSectionRef = useRef(false);
+  const prevDramaSectionRef = useRef(false);
   const baseVolumeRef = useRef(1);
-  const loopTransitioningRef = useRef(false);
-  const loopMonitorIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const fadeRafRef = useRef<number | null>(null);
+  const crossfadeRafRef = useRef<number | null>(null);
   const [isMusicEnabled, setIsMusicEnabled] = useState(true);
   const [isEffectsEnabled, setIsEffectsEnabled] = useState(true);
-  const [isMusicLocked, setIsMusicLocked] = useState(false);
+  const [isDramaSection, setIsDramaSection] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -59,90 +59,25 @@ export default function HomeClient() {
   }, []);
 
   useEffect(() => {
-    const audio = bgAudioRef.current;
-    if (!audio) return;
+    const storyAudio = storyAudioRef.current;
+    const dramaAudio = dramaAudioRef.current;
+    if (!storyAudio || !dramaAudio) return;
 
-    const clearFade = () => {
-      if (fadeRafRef.current) {
-        cancelAnimationFrame(fadeRafRef.current);
-        fadeRafRef.current = null;
-      }
-    };
+    storyAudio.volume = baseVolumeRef.current;
+    dramaAudio.volume = baseVolumeRef.current;
 
-    const fadeTo = (targetVolume: number, durationMs: number, onComplete?: () => void) => {
-      clearFade();
-      const startVolume = audio.volume;
-      const startTime = performance.now();
-
-      const tick = (now: number) => {
-        const progress = Math.min((now - startTime) / durationMs, 1);
-        audio.volume = startVolume + (targetVolume - startVolume) * progress;
-
-        if (progress < 1) {
-          fadeRafRef.current = requestAnimationFrame(tick);
-          return;
-        }
-
-        fadeRafRef.current = null;
-        if (onComplete) onComplete();
-      };
-
-      fadeRafRef.current = requestAnimationFrame(tick);
-    };
-
-    const softLoop = () => {
-      if (bgAudioStoppedRef.current || !musicEnabledRef.current || loopTransitioningRef.current) return;
-      loopTransitioningRef.current = true;
-
-      fadeTo(0, 420, () => {
-        if (bgAudioStoppedRef.current) {
-          loopTransitioningRef.current = false;
-          return;
-        }
-
-        audio.currentTime = 0;
-        void audio.play().catch(() => {
-          loopTransitioningRef.current = false;
-        });
-
-        fadeTo(baseVolumeRef.current, 700, () => {
-          loopTransitioningRef.current = false;
-        });
-      });
-    };
-
-    audio.volume = baseVolumeRef.current;
-
-    const tryPlay = () => {
-      if (bgAudioStoppedRef.current || !musicEnabledRef.current) return;
-      void audio.play().catch(() => {
+    const tryPlayCurrent = () => {
+      if (!musicEnabledRef.current) return;
+      const active = isDramaSectionRef.current ? dramaAudio : storyAudio;
+      void active.play().catch(() => {
         // Some browsers block autoplay with sound until user interaction.
       });
     };
 
-    const handleEnded = () => {
-      if (bgAudioStoppedRef.current || !musicEnabledRef.current) return;
-      softLoop();
-    };
-
-    loopMonitorIntervalRef.current = setInterval(() => {
-      if (bgAudioStoppedRef.current || !musicEnabledRef.current || audio.paused || loopTransitioningRef.current) {
-        return;
-      }
-      if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
-
-      const timeLeft = audio.duration - audio.currentTime;
-      if (timeLeft <= 0.55) {
-        softLoop();
-      }
-    }, 120);
-
-    audio.addEventListener("ended", handleEnded);
-
-    tryPlay();
+    tryPlayCurrent();
 
     const onFirstInteraction = () => {
-      tryPlay();
+      tryPlayCurrent();
       window.removeEventListener("pointerdown", onFirstInteraction);
       window.removeEventListener("keydown", onFirstInteraction);
       window.removeEventListener("touchstart", onFirstInteraction);
@@ -153,12 +88,10 @@ export default function HomeClient() {
     window.addEventListener("touchstart", onFirstInteraction, { passive: true });
 
     return () => {
-      audio.removeEventListener("ended", handleEnded);
-      if (loopMonitorIntervalRef.current) {
-        clearInterval(loopMonitorIntervalRef.current);
-        loopMonitorIntervalRef.current = null;
+      if (crossfadeRafRef.current) {
+        cancelAnimationFrame(crossfadeRafRef.current);
+        crossfadeRafRef.current = null;
       }
-      clearFade();
       window.removeEventListener("pointerdown", onFirstInteraction);
       window.removeEventListener("keydown", onFirstInteraction);
       window.removeEventListener("touchstart", onFirstInteraction);
@@ -166,53 +99,117 @@ export default function HomeClient() {
   }, []);
 
   useEffect(() => {
+    isDramaSectionRef.current = isDramaSection;
+  }, [isDramaSection]);
+
+  useEffect(() => {
     musicEnabledRef.current = isMusicEnabled;
 
-    const audio = bgAudioRef.current;
-    if (!audio || bgAudioStoppedRef.current) return;
+    const storyAudio = storyAudioRef.current;
+    const dramaAudio = dramaAudioRef.current;
+    if (!storyAudio || !dramaAudio) return;
 
-    if (isMusicEnabled) {
-      audio.volume = baseVolumeRef.current;
-      void audio.play().catch(() => {});
+    const stopCrossfade = () => {
+      if (crossfadeRafRef.current) {
+        cancelAnimationFrame(crossfadeRafRef.current);
+        crossfadeRafRef.current = null;
+      }
+    };
+
+    const crossfade = (fromAudio: HTMLAudioElement, toAudio: HTMLAudioElement, durationMs: number) => {
+      stopCrossfade();
+      const fromStartVolume = Math.max(0, Math.min(1, fromAudio.volume));
+      const toTargetVolume = Math.max(0, Math.min(1, baseVolumeRef.current));
+      const startTime = performance.now();
+
+      toAudio.volume = 0;
+      toAudio.currentTime = 0;
+      void toAudio.play().catch(() => {});
+
+      const tick = (now: number) => {
+        const progress = Math.min((now - startTime) / durationMs, 1);
+        fromAudio.volume = fromStartVolume * (1 - progress);
+        toAudio.volume = toTargetVolume * progress;
+
+        if (progress < 1) {
+          crossfadeRafRef.current = requestAnimationFrame(tick);
+          return;
+        }
+
+        fromAudio.pause();
+        fromAudio.volume = toTargetVolume;
+        toAudio.volume = toTargetVolume;
+        crossfadeRafRef.current = null;
+      };
+
+      crossfadeRafRef.current = requestAnimationFrame(tick);
+    };
+
+    if (!isMusicEnabled) {
+      stopCrossfade();
+      storyAudio.pause();
+      dramaAudio.pause();
+      storyAudio.volume = baseVolumeRef.current;
+      dramaAudio.volume = baseVolumeRef.current;
       return;
     }
 
-    audio.pause();
-  }, [isMusicEnabled]);
+    const active = isDramaSection ? dramaAudio : storyAudio;
+    const inactive = isDramaSection ? storyAudio : dramaAudio;
+    const changedSection = prevDramaSectionRef.current !== isDramaSection;
+    prevDramaSectionRef.current = isDramaSection;
+
+    if (changedSection) {
+      crossfade(inactive, active, 800);
+      return;
+    }
+
+    stopCrossfade();
+    inactive.pause();
+    inactive.volume = baseVolumeRef.current;
+    active.volume = baseVolumeRef.current;
+    void active.play().catch(() => {});
+  }, [isMusicEnabled, isDramaSection]);
 
   useEffect(() => {
     const main = mainRef.current;
-    const audio = bgAudioRef.current;
-    if (!main || !audio) return;
+    if (!main) return;
 
-    const section06 = main.querySelector<HTMLElement>(".section--06");
-    if (!section06) return;
+    const sections = Array.from(main.querySelectorAll<HTMLElement>(".section"));
+    if (sections.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (!entry?.isIntersecting) return;
+    let rafId = 0;
 
-        bgAudioStoppedRef.current = true;
-        audio.pause();
-        audio.currentTime = 0;
-        setIsMusicEnabled(false);
-        setIsMusicLocked(true);
-        if (loopMonitorIntervalRef.current) {
-          clearInterval(loopMonitorIntervalRef.current);
-          loopMonitorIntervalRef.current = null;
+    const updateFromScroll = () => {
+      rafId = 0;
+      const top = main.getBoundingClientRect().top;
+      let closestIndex = 0;
+      let minDistance = Number.POSITIVE_INFINITY;
+
+      sections.forEach((section, index) => {
+        const distance = Math.abs(section.getBoundingClientRect().top - top);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestIndex = index;
         }
-        if (fadeRafRef.current) {
-          cancelAnimationFrame(fadeRafRef.current);
-          fadeRafRef.current = null;
-        }
-        observer.disconnect();
-      },
-      { threshold: 0.45 },
-    );
+      });
 
-    observer.observe(section06);
-    return () => observer.disconnect();
+      // section indices: 0..9 => drama in 06..09 => indices 5..8
+      setIsDramaSection(closestIndex >= 5 && closestIndex <= 8);
+    };
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(updateFromScroll);
+    };
+
+    updateFromScroll();
+    main.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      main.removeEventListener("scroll", onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
@@ -225,11 +222,7 @@ export default function HomeClient() {
           aria-label={isMusicEnabled ? "Desactivar musica de fondo" : "Activar musica de fondo"}
           title="Música"
           aria-pressed={isMusicEnabled}
-          onClick={() => {
-            if (isMusicLocked) return;
-            setIsMusicEnabled((prev) => !prev);
-          }}
-          disabled={isMusicLocked}
+          onClick={() => setIsMusicEnabled((prev) => !prev)}
         >
           {isMusicEnabled ? <Volume2 size={20} strokeWidth={2} /> : <VolumeX size={20} strokeWidth={2} />}
         </button>
@@ -247,16 +240,17 @@ export default function HomeClient() {
         </button>
       </div>
 
-      <audio ref={bgAudioRef} src="/sounds/musica-cuento-infantil-fondo.mp3" preload="auto" />
+      <audio ref={storyAudioRef} src="/sounds/musica-cuento-infantil-fondo.mp3" preload="auto" loop />
+      <audio ref={dramaAudioRef} src="/sounds/drama-fondo.mp3" preload="auto" loop />
       <Section01 effectsEnabled={isEffectsEnabled} />
       <Section02 effectsEnabled={isEffectsEnabled} />
       <Section03 effectsEnabled={isEffectsEnabled} />
       <Section04 effectsEnabled={isEffectsEnabled} />
       <Section05 effectsEnabled={isEffectsEnabled} />
       <Section06 />
-      <Section07 />
-      <Section08 />
-      <Section09 />
+      <Section07 effectsEnabled={isEffectsEnabled} />
+      <Section08 effectsEnabled={isEffectsEnabled} />
+      <Section09 effectsEnabled={isEffectsEnabled} />
       <Section10 />
     </main>
   );
