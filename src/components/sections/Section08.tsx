@@ -1,6 +1,7 @@
 "use client";
 
 import { type MouseEvent, useEffect, useRef, useState } from "react";
+import StoryCaption from "@/components/StoryCaption";
 
 interface Section08Props {
   effectsEnabled: boolean;
@@ -120,6 +121,7 @@ export default function Section08({ effectsEnabled }: Section08Props) {
         }}
         aria-hidden="true"
       />
+      <StoryCaption text="Después derribó la de madera, y los dos hermanos huyeron juntos." className="story-caption--soft" />
       <div
         className="section-content section--08-content section--08-content--interactive"
         role="group"

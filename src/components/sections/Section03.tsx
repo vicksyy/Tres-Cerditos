@@ -1,6 +1,7 @@
 "use client";
 
 import { type MouseEvent, useEffect, useRef, useState } from "react";
+import StoryCaption from "@/components/StoryCaption";
 
 type StrawId = "left" | "farLeft";
 
@@ -337,6 +338,7 @@ export default function Section03({ effectsEnabled }: Section03Props) {
         }}
         aria-hidden="true"
       />
+      <StoryCaption text="El primero empezó rápido y levantó una casita de paja." className="story-caption--soft" />
       <div ref={sceneRef} className="section-content section--03-content" role="group" aria-label="Cerdito trabajando">
         <img
           className="section--03-pig-work"

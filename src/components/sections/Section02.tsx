@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import StoryCaption from "@/components/StoryCaption";
 
 type PigId = "pig1" | "pig2" | "pig3";
 
@@ -84,6 +85,10 @@ export default function Section02({ effectsEnabled }: Section02Props) {
           backgroundImage: "url('/img/Section02/bg-section02.png')",
         }}
         aria-hidden="true"
+      />
+      <StoryCaption
+        text="Tres cerditos que decidieron separarse para construir su propia casa."
+        className="story-caption--soft"
       />
       <div className="section-content" role="group" aria-label="Cerditos caminando">
         {pigs.map((pig) => (

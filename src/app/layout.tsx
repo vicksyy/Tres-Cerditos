@@ -1,5 +1,13 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { Patrick_Hand } from "next/font/google";
+
+const patrickHand = Patrick_Hand({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-patrick-hand",
+});
 
 export const metadata: Metadata = {
   title: "Los Tres Cerditos - Cuento Interactivo",
@@ -13,7 +21,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body suppressHydrationWarning>{children}</body>
+      <body className={patrickHand.variable} suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }

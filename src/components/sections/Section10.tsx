@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import StoryCaption from "@/components/StoryCaption";
 
 export default function Section10() {
   const [happyStep, setHappyStep] = useState(0);
@@ -23,6 +24,10 @@ export default function Section10() {
           backgroundImage: "url('/img/Section10/inside_house.png')",
         }}
         aria-hidden="true"
+      />
+      <StoryCaption
+        text="Al final, los tres cerditos celebraron felices y aprendieron el valor del esfuerzo."
+        className="story-caption--soft"
       />
       <div
         className="section-content section--10-content section--10-content--interactive"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import StoryCaption from "@/components/StoryCaption";
 
 interface Section04Props {
   effectsEnabled: boolean;
@@ -130,6 +131,7 @@ export default function Section04({ effectsEnabled }: Section04Props) {
         }}
         aria-hidden="true"
       />
+      <StoryCaption text="El segundo trabajó más y construyó una casa de madera." className="story-caption--soft" />
       <div className="section-content section--04-content" role="group" aria-label="Cerdito 2 trabajando">
         <img
           className={`section--04-pig-work${hasStartedBuild ? " section--04-pig-work--hidden" : ""}`}

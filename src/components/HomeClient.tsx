@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Bell, BellOff, Volume2, VolumeX } from "lucide-react";
 import Section01 from "@/components/sections/Section01";
 import Section02 from "@/components/sections/Section02";
@@ -22,9 +22,53 @@ export default function HomeClient() {
   const prevDramaSectionRef = useRef(false);
   const baseVolumeRef = useRef(1);
   const crossfadeRafRef = useRef<number | null>(null);
+  const storyHintTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isMusicEnabled, setIsMusicEnabled] = useState(true);
   const [isEffectsEnabled, setIsEffectsEnabled] = useState(true);
   const [isDramaSection, setIsDramaSection] = useState(false);
+  const [isIntroLocked, setIsIntroLocked] = useState(true);
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+  const [showStoryHint, setShowStoryHint] = useState(false);
+
+  const clearStoryHintTimer = () => {
+    if (storyHintTimeoutRef.current) {
+      clearTimeout(storyHintTimeoutRef.current);
+      storyHintTimeoutRef.current = null;
+    }
+  };
+
+  const restartStoryHintTimer = (sectionIndex: number) => {
+    clearStoryHintTimer();
+    if (isIntroLocked || sectionIndex < 2) {
+      setShowStoryHint(false);
+      return;
+    }
+    setShowStoryHint(false);
+    storyHintTimeoutRef.current = setTimeout(() => {
+      setShowStoryHint(true);
+    }, 2000);
+  };
+
+  const isStoryProgressClick = (target: HTMLElement, sectionIndex: number) => {
+    if (sectionIndex === 2) return Boolean(target.closest(".section--03-build-trigger"));
+    if (sectionIndex === 3) return Boolean(target.closest(".section--04-build-trigger"));
+    if (sectionIndex === 4) return Boolean(target.closest(".section--05-content"));
+    if (sectionIndex === 5) return Boolean(target.closest(".section--06-wolf"));
+    if (sectionIndex === 6) return Boolean(target.closest(".section--07-content--interactive"));
+    if (sectionIndex === 7)
+      return Boolean(target.closest(".section--08-content--interactive, .section--08-pigs-surprised"));
+    if (sectionIndex === 8) return Boolean(target.closest(".section--09-content--interactive"));
+    if (sectionIndex === 9) return Boolean(target.closest(".section--10-content--interactive"));
+    return false;
+  };
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setIsIntroLocked(false);
+    }, 4400);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -42,6 +86,7 @@ export default function HomeClient() {
       const match = /^(?:Digit|Numpad)([1-9])$/.exec(event.code);
       const keyNumber = match ? Number(match[1]) : null;
       if (!keyNumber) return;
+      if (isIntroLocked && keyNumber !== 1) return;
 
       const main = mainRef.current;
       if (!main) return;
@@ -56,7 +101,7 @@ export default function HomeClient() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isIntroLocked]);
 
   useEffect(() => {
     const storyAudio = storyAudioRef.current;
@@ -194,6 +239,7 @@ export default function HomeClient() {
         }
       });
 
+      setActiveSectionIndex(closestIndex);
       // section indices: 0..9 => drama in 06..09 => indices 5..8
       setIsDramaSection(closestIndex >= 5 && closestIndex <= 8);
     };
@@ -212,8 +258,47 @@ export default function HomeClient() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!isIntroLocked) return;
+    const main = mainRef.current;
+    if (!main) return;
+    main.scrollTo({ top: 0, behavior: "auto" });
+  }, [isIntroLocked]);
+
+  useEffect(() => {
+    restartStoryHintTimer(activeSectionIndex);
+  }, [activeSectionIndex, isIntroLocked]);
+
+  useEffect(() => {
+    return () => {
+      clearStoryHintTimer();
+    };
+  }, []);
+
+  const handleMainClickCapture = (event: MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+
+    const main = mainRef.current;
+    if (!main) return;
+
+    const section = target.closest<HTMLElement>(".section");
+    if (!section) return;
+
+    const sections = Array.from(main.querySelectorAll<HTMLElement>(".section"));
+    const sectionIndex = sections.indexOf(section);
+    if (sectionIndex < 2) return;
+    if (!isStoryProgressClick(target, sectionIndex)) return;
+
+    restartStoryHintTimer(sectionIndex);
+  };
+
   return (
-    <main ref={mainRef} className="main">
+    <main
+      ref={mainRef}
+      className={`main${isIntroLocked ? " main--intro-lock" : ""}`}
+      onClickCapture={handleMainClickCapture}
+    >
       <div className="audio-controls" role="group" aria-label="Controles de audio">
         <button
           type="button"
@@ -239,6 +324,7 @@ export default function HomeClient() {
           {isEffectsEnabled ? <Bell size={20} strokeWidth={2} /> : <BellOff size={20} strokeWidth={2} />}
         </button>
       </div>
+      {showStoryHint ? <p className="story-hint">Haz click para continuar la historia</p> : null}
 
       <audio ref={storyAudioRef} src="/sounds/musica-cuento-infantil-fondo.mp3" preload="auto" loop />
       <audio ref={dramaAudioRef} src="/sounds/drama-fondo.mp3" preload="auto" loop />

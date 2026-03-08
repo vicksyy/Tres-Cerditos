@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import StoryCaption from "@/components/StoryCaption";
 
 type PigId = "pig1" | "pig2" | "pig3";
 
@@ -136,6 +137,20 @@ export default function Section01({ effectsEnabled }: Section01Props) {
         }}
         aria-hidden="true"
       />
+      <div className="section01-intro" role="status" aria-live="polite">
+        <h1 className="section01-intro-title" aria-label="Los Tres Cerditos">
+          {"Los Tres Cerditos".split("").map((letter, index) => (
+            <span
+              key={`${letter}-${index}`}
+              className="section01-intro-letter"
+              style={{ "--letter-delay": `${index * 0.1}s` } as CSSProperties}
+            >
+              {letter === " " ? "\u00A0" : letter}
+            </span>
+          ))}
+        </h1>
+        <StoryCaption text="Había una vez..." className="story-caption--s01" startDelay={2.2} />
+      </div>
       {leaves.map((leaf) => (
         <button
           key={leaf.id}

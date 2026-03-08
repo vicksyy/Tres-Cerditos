@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import StoryCaption from "@/components/StoryCaption";
 
 interface Section09Props {
   effectsEnabled: boolean;
@@ -143,6 +144,10 @@ export default function Section09({ effectsEnabled }: Section09Props) {
           backgroundImage: "url('/img/Section09/bg-section09.png')",
         }}
         aria-hidden="true"
+      />
+      <StoryCaption
+        text="Pero la casa de ladrillo resistió: el lobo sopló y sopló sin lograr nada."
+        className="story-caption--soft"
       />
       <div
         className="section-content section--09-content section--09-content--interactive"

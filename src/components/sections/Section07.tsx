@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import StoryCaption from "@/components/StoryCaption";
 
 interface Section07Props {
   effectsEnabled: boolean;
@@ -114,6 +115,7 @@ export default function Section07({ effectsEnabled }: Section07Props) {
         }}
         aria-hidden="true"
       />
+      <StoryCaption text="Sopló la casa de paja... y el primer cerdito salió corriendo." className="story-caption--soft" />
       <div
         className="section-content section--07-content section--07-content--interactive"
         role="group"

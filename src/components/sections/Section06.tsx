@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import StoryCaption from "@/components/StoryCaption";
 
 export default function Section06() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -51,6 +52,10 @@ export default function Section06() {
           backgroundImage: "url('/img/Section06/bg-section06.png')",
         }}
         aria-hidden="true"
+      />
+      <StoryCaption
+        text="Entonces apareció el lobo feroz, hambriento y con ganas de soplar."
+        className="story-caption--soft"
       />
       <div className="section-content section--06-content" role="group" aria-label="Escena 6">
         <img

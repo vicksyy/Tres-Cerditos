@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import StoryCaption from "@/components/StoryCaption";
 
 interface Section05Props {
   effectsEnabled: boolean;
@@ -113,6 +114,10 @@ export default function Section05({ effectsEnabled }: Section05Props) {
           backgroundImage: "url('/img/Section05/bg-section05.png')",
         }}
         aria-hidden="true"
+      />
+      <StoryCaption
+        text="El tercero, paciente y fuerte, construyó una casa de ladrillo."
+        className="story-caption--soft"
       />
       <div
         className="section-content section--05-content"
