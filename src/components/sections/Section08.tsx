@@ -113,7 +113,11 @@ export default function Section08({ effectsEnabled }: Section08Props) {
   const showRunningPigs = sceneStep >= 3;
 
   return (
-    <section ref={sectionRef} className="section section--08">
+    <section
+      ref={sectionRef}
+      className="section section--08"
+      data-story-complete={sceneStep >= 3 ? "true" : "false"}
+    >
       <div
         className="section-bg"
         style={{

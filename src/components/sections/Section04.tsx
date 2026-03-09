@@ -123,7 +123,7 @@ export default function Section04({ effectsEnabled }: Section04Props) {
   const showHappyPig = houseStep >= 3;
 
   return (
-    <section className="section section--04">
+    <section className="section section--04" data-story-complete={houseStep >= 3 ? "true" : "false"}>
       <div
         className="section-bg"
         style={{

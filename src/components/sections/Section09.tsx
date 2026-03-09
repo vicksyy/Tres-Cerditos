@@ -137,7 +137,11 @@ export default function Section09({ effectsEnabled }: Section09Props) {
   ];
 
   return (
-    <section ref={sectionRef} className="section section--09">
+    <section
+      ref={sectionRef}
+      className="section section--09"
+      data-story-complete={wolfPoseStep >= 4 && previewState === "done" ? "true" : "false"}
+    >
       <div
         className="section-bg"
         style={{
@@ -146,7 +150,7 @@ export default function Section09({ effectsEnabled }: Section09Props) {
         aria-hidden="true"
       />
       <StoryCaption
-        text="Pero la casa de ladrillo resistió: el lobo sopló y sopló sin lograr nada."
+        text="Pero la casa de ladrillo resistió. El lobo sopló y sopló sin lograr nada."
         className="story-caption--soft"
       />
       <div

@@ -107,7 +107,7 @@ export default function Section05({ effectsEnabled }: Section05Props) {
   }, [effectsEnabled]);
 
   return (
-    <section className="section section--05">
+    <section className="section section--05" data-story-complete={houseStep >= 3 ? "true" : "false"}>
       <div
         className="section-bg"
         style={{

@@ -107,7 +107,11 @@ export default function Section07({ effectsEnabled }: Section07Props) {
   const showPigRun = sceneStep >= 3;
 
   return (
-    <section ref={sectionRef} className="section section--07">
+    <section
+      ref={sectionRef}
+      className="section section--07"
+      data-story-complete={sceneStep >= 3 ? "true" : "false"}
+    >
       <div
         className="section-bg"
         style={{

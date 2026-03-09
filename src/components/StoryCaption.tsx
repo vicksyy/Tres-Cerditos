@@ -11,6 +11,7 @@ interface StoryCaptionProps {
 export default function StoryCaption({ text, className = "", startDelay = 0.15 }: StoryCaptionProps) {
   const captionRef = useRef<HTMLParagraphElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const words = text.trim().split(/\s+/);
 
   useEffect(() => {
     const caption = captionRef.current;
@@ -35,13 +36,15 @@ export default function StoryCaption({ text, className = "", startDelay = 0.15 }
 
   return (
     <p ref={captionRef} className={`story-caption ${className}${isVisible ? " story-caption--animate" : ""}`.trim()}>
-      {text.split("").map((letter, index) => (
-        <span
-          key={`${letter}-${index}`}
-          className="story-caption-letter"
-          style={{ "--letter-delay": `${startDelay + index * 0.06}s` } as CSSProperties}
-        >
-          {letter === " " ? "\u00A0" : letter}
+      {words.map((word, index) => (
+        <span key={`${word}-${index}`}>
+          <span
+            className="story-caption-letter"
+            style={{ "--letter-delay": `${startDelay + index * 0.11}s` } as CSSProperties}
+          >
+            {word}
+          </span>
+          {index < words.length - 1 ? " " : ""}
         </span>
       ))}
     </p>

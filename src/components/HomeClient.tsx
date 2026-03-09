@@ -14,6 +14,7 @@ import Section09 from "@/components/sections/Section09";
 import Section10 from "@/components/sections/Section10";
 
 export default function HomeClient() {
+  const totalSections = 10;
   const mainRef = useRef<HTMLElement | null>(null);
   const storyAudioRef = useRef<HTMLAudioElement | null>(null);
   const dramaAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -46,7 +47,7 @@ export default function HomeClient() {
     setShowStoryHint(false);
     storyHintTimeoutRef.current = setTimeout(() => {
       setShowStoryHint(true);
-    }, 2000);
+    }, 5000);
   };
 
   const isStoryProgressClick = (target: HTMLElement, sectionIndex: number) => {
@@ -275,6 +276,17 @@ export default function HomeClient() {
     };
   }, []);
 
+  const hasPendingStoryInteraction = (sectionIndex: number) => {
+    if (sectionIndex < 2 || sectionIndex === 5 || sectionIndex === 9) return false;
+    const main = mainRef.current;
+    if (!main) return false;
+    const section = main.querySelectorAll<HTMLElement>(".section")[sectionIndex];
+    if (!section) return false;
+    return section.dataset.storyComplete !== "true";
+  };
+
+  const shouldShowStoryHint = showStoryHint && hasPendingStoryInteraction(activeSectionIndex);
+
   const handleMainClickCapture = (event: MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement | null;
     if (!target) return;
@@ -324,7 +336,17 @@ export default function HomeClient() {
           {isEffectsEnabled ? <Bell size={20} strokeWidth={2} /> : <BellOff size={20} strokeWidth={2} />}
         </button>
       </div>
-      {showStoryHint ? <p className="story-hint">Haz click para continuar la historia</p> : null}
+      <div className="section-progress" aria-hidden="true">
+        {Array.from({ length: totalSections }, (_, index) => (
+          <span
+            key={index}
+            className={`section-progress-dot${index <= activeSectionIndex ? " section-progress-dot--filled" : ""}${
+              index === activeSectionIndex ? " section-progress-dot--current" : ""
+            }`}
+          />
+        ))}
+      </div>
+      {shouldShowStoryHint ? <p className="story-hint">Haz click para continuar la historia</p> : null}
 
       <audio ref={storyAudioRef} src="/sounds/musica-cuento-infantil-fondo.mp3" preload="auto" loop />
       <audio ref={dramaAudioRef} src="/sounds/drama-fondo.mp3" preload="auto" loop />

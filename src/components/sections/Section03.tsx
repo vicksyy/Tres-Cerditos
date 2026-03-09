@@ -67,10 +67,14 @@ export default function Section03({ effectsEnabled }: Section03Props) {
   const revealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dustTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const happyTransitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const happySwapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hammerSoundRef = useRef<HTMLAudioElement | null>(null);
   const sparkleSoundRef = useRef<HTMLAudioElement | null>(null);
   const fallbackNudgeDirectionRef = useRef<1 | -1>(1);
   const [fadeInStep, setFadeInStep] = useState<number | null>(null);
+  const [showHappyPig, setShowHappyPig] = useState(false);
+  const [isPigFadingOut, setIsPigFadingOut] = useState(false);
 
   const playHammerSound = () => {
     if (!effectsEnabled) return;
@@ -118,6 +122,15 @@ export default function Section03({ effectsEnabled }: Section03Props) {
       setFadeInStep(nextStep);
       if (nextStep === 3) {
         playSparkleSound();
+        if (happyTransitionTimeoutRef.current) clearTimeout(happyTransitionTimeoutRef.current);
+        if (happySwapTimeoutRef.current) clearTimeout(happySwapTimeoutRef.current);
+        happyTransitionTimeoutRef.current = setTimeout(() => {
+          setIsPigFadingOut(true);
+          happySwapTimeoutRef.current = setTimeout(() => {
+            setShowHappyPig(true);
+            setIsPigFadingOut(false);
+          }, 280);
+        }, 700);
       }
       fadeTimeoutRef.current = setTimeout(() => setFadeInStep(null), 700);
     }, 1200);
@@ -306,6 +319,8 @@ export default function Section03({ effectsEnabled }: Section03Props) {
       if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
       if (dustTimeoutRef.current) clearTimeout(dustTimeoutRef.current);
       if (fadeTimeoutRef.current) clearTimeout(fadeTimeoutRef.current);
+      if (happyTransitionTimeoutRef.current) clearTimeout(happyTransitionTimeoutRef.current);
+      if (happySwapTimeoutRef.current) clearTimeout(happySwapTimeoutRef.current);
       if (hammerSoundRef.current) {
         hammerSoundRef.current.pause();
         hammerSoundRef.current.currentTime = 0;
@@ -330,7 +345,7 @@ export default function Section03({ effectsEnabled }: Section03Props) {
   }, [effectsEnabled]);
 
   return (
-    <section className="section section--03">
+    <section className="section section--03" data-story-complete={houseStep >= 3 ? "true" : "false"}>
       <div
         className="section-bg"
         style={{
@@ -341,9 +356,9 @@ export default function Section03({ effectsEnabled }: Section03Props) {
       <StoryCaption text="El primero empezó rápido y levantó una casita de paja." className="story-caption--soft" />
       <div ref={sceneRef} className="section-content section--03-content" role="group" aria-label="Cerdito trabajando">
         <img
-          className="section--03-pig-work"
-          src="/img/Section03/pig1_work.png"
-          alt="Cerdito 1 trabajando"
+          className={`section--03-pig-work${isPigFadingOut ? " section--03-pig-work--fade-out" : ""}`}
+          src={showHappyPig ? "/img/Section03/pig1_happy.png" : "/img/Section03/pig1_work.png"}
+          alt={showHappyPig ? "Cerdito 1 feliz" : "Cerdito 1 trabajando"}
           draggable={false}
         />
         {straws.map((straw) => (

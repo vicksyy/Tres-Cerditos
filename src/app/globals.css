@@ -98,6 +98,40 @@ body {
   gap: 10px;
 }
 
+.section-progress {
+  position: fixed;
+  top: 50%;
+  right: clamp(10px, 1.8vw, 18px);
+  z-index: 27;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 9px 7px;
+  border-radius: 999px;
+  background: rgba(8, 8, 8, 0.46);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+
+.section-progress-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.26);
+  transition: background-color 220ms ease, transform 220ms ease, opacity 220ms ease;
+}
+
+.section-progress-dot--filled {
+  background: rgba(245, 245, 245, 0.9);
+}
+
+.section-progress-dot--current {
+  transform: scale(1.18);
+}
+
 .story-hint {
   position: fixed;
   left: 50%;
@@ -200,7 +234,8 @@ body {
   left: 50%;
   z-index: 9;
   margin: 0;
-  width: min(78vw, 760px);
+  width: fit-content;
+  max-width: calc(100vw - 2rem);
   transform: translateX(-50%);
   padding: clamp(0.35rem, 1.4vh, 0.75rem) clamp(0.8rem, 2vw, 1.4rem);
   border-radius: 999px;
@@ -208,6 +243,10 @@ body {
   backdrop-filter: blur(1.5px);
   -webkit-backdrop-filter: blur(1.5px);
   text-align: center;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
   font-size: clamp(1rem, 2.45vw, 2rem);
   line-height: 1.25;
   color: #f8f6ef;
@@ -246,6 +285,7 @@ body {
   background: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  color: #111111;
   text-shadow: none;
   margin-top: clamp(2.8rem, 6vh, 4.8rem);
 }
@@ -448,6 +488,12 @@ body {
   height: auto;
   user-select: none;
   transform: translateX(-14vw) translateY(3vh);
+  opacity: 1;
+  transition: opacity 280ms ease;
+}
+
+.section--03-pig-work--fade-out {
+  opacity: 0;
 }
 
 .section--03-straw-piece {
@@ -1232,12 +1278,12 @@ body {
 }
 
 .section--04-tool--hammer {
-  left: 53%;
-  bottom: 7.6vh;
+  left: 16%;
+  bottom: 10.4vh;
 }
 
 .section--04-tool--nail {
-  left: 73%;
+  left: 82%;
   bottom: 11.2vh;
 }
 
@@ -1562,6 +1608,22 @@ body {
 }
 
 @media (max-width: 900px) {
+  .section-progress {
+    right: 8px;
+    gap: 6px;
+    padding: 8px 6px;
+  }
+
+  .section-progress-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .story-caption {
+    white-space: nowrap;
+    max-width: calc(100vw - 1rem);
+  }
+
   .leaf-offset--shifted {
     transform: translateX(16vw) translateY(-1vh) rotate(16deg);
   }
@@ -1788,17 +1850,25 @@ body {
   }
 
   .section--04-tool--hammer {
-    left: 48%;
-    bottom: 8.6vh;
+    left: 12%;
+    bottom: 17.6vh;
   }
 
   .section--04-tool--nail {
-    left: 81%;
+    left: 87%;
     bottom: 12.2vh;
   }
 
   .section--04-tool-img {
     width: clamp(66px, 15.5vw, 112px);
+  }
+}
+
+@media (max-width: 560px) {
+  .story-caption {
+    white-space: normal;
+    text-wrap: balance;
+    max-width: calc(100vw - 1rem);
   }
 }
 
