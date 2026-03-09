@@ -196,16 +196,22 @@ body {
 
 .story-caption {
   position: absolute;
-  bottom: clamp(16px, 4vh, 32px);
+  bottom: clamp(46px, 9vh, 82px);
   left: 50%;
   z-index: 9;
   margin: 0;
-  width: min(90vw, 980px);
+  width: min(78vw, 760px);
   transform: translateX(-50%);
+  padding: clamp(0.35rem, 1.4vh, 0.75rem) clamp(0.8rem, 2vw, 1.4rem);
+  border-radius: 999px;
+  background: rgba(8, 8, 8, 0.5);
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
   text-align: center;
   font-size: clamp(1rem, 2.45vw, 2rem);
   line-height: 1.25;
-  color: #29251e;
+  color: #f8f6ef;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
   pointer-events: none;
 }
 
@@ -230,6 +236,17 @@ body {
 }
 
 .story-caption--s01 {
+  position: static;
+  left: auto;
+  bottom: auto;
+  width: 100%;
+  transform: none;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  text-shadow: none;
   margin-top: clamp(2.8rem, 6vh, 4.8rem);
 }
 
