@@ -22,6 +22,7 @@ export default function Section04({ effectsEnabled }: Section04Props) {
   const workingSwitchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hammerSoundRef = useRef<HTMLAudioElement | null>(null);
   const sparkleSoundRef = useRef<HTMLAudioElement | null>(null);
+  const pigOinkSoundRef = useRef<HTMLAudioElement | null>(null);
 
   const playHammerSound = () => {
     if (!effectsEnabled) return;
@@ -45,6 +46,17 @@ export default function Section04({ effectsEnabled }: Section04Props) {
     void sparkleSoundRef.current.play().catch(() => {});
   };
 
+  const playPigOinkSound = () => {
+    if (!effectsEnabled) return;
+    if (!pigOinkSoundRef.current) {
+      pigOinkSoundRef.current = new Audio("/sounds/pig_oink.mp3");
+      pigOinkSoundRef.current.preload = "auto";
+      pigOinkSoundRef.current.volume = 0.7;
+    }
+    pigOinkSoundRef.current.currentTime = 0;
+    void pigOinkSoundRef.current.play().catch(() => {});
+  };
+
   const handleBuildClick = () => {
     if (showDust || houseStep >= 3) {
       return;
@@ -53,6 +65,9 @@ export default function Section04({ effectsEnabled }: Section04Props) {
     const nextStep = houseStep + 1;
     setShowDust(true);
     playHammerSound();
+    if (houseStep === 0) {
+      playPigOinkSound();
+    }
 
     if (houseStep === 1 && !workingOnLeft) {
       setSwitchingWorkingSide(true);
@@ -103,6 +118,10 @@ export default function Section04({ effectsEnabled }: Section04Props) {
         sparkleSoundRef.current.pause();
         sparkleSoundRef.current.currentTime = 0;
       }
+      if (pigOinkSoundRef.current) {
+        pigOinkSoundRef.current.pause();
+        pigOinkSoundRef.current.currentTime = 0;
+      }
     };
   }, []);
 
@@ -115,6 +134,10 @@ export default function Section04({ effectsEnabled }: Section04Props) {
     if (sparkleSoundRef.current) {
       sparkleSoundRef.current.pause();
       sparkleSoundRef.current.currentTime = 0;
+    }
+    if (pigOinkSoundRef.current) {
+      pigOinkSoundRef.current.pause();
+      pigOinkSoundRef.current.currentTime = 0;
     }
   }, [effectsEnabled]);
 

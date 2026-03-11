@@ -20,6 +20,7 @@ export default function Section05({ effectsEnabled }: Section05Props) {
   const happyPigTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hammerSoundRef = useRef<HTMLAudioElement | null>(null);
   const sparkleSoundRef = useRef<HTMLAudioElement | null>(null);
+  const pigOinkSoundRef = useRef<HTMLAudioElement | null>(null);
 
   const playHammerSound = () => {
     if (!effectsEnabled) return;
@@ -43,6 +44,17 @@ export default function Section05({ effectsEnabled }: Section05Props) {
     void sparkleSoundRef.current.play().catch(() => {});
   };
 
+  const playPigOinkSound = () => {
+    if (!effectsEnabled) return;
+    if (!pigOinkSoundRef.current) {
+      pigOinkSoundRef.current = new Audio("/sounds/pig_oink.mp3");
+      pigOinkSoundRef.current.preload = "auto";
+      pigOinkSoundRef.current.volume = 0.7;
+    }
+    pigOinkSoundRef.current.currentTime = 0;
+    void pigOinkSoundRef.current.play().catch(() => {});
+  };
+
   const handleStartScene = () => {
     if (!showWorkPig) {
       setShowWorkPig(true);
@@ -57,6 +69,9 @@ export default function Section05({ effectsEnabled }: Section05Props) {
     const nextStep = houseStep + 1;
     setShowDust(true);
     playHammerSound();
+    if (houseStep === 0) {
+      playPigOinkSound();
+    }
 
     if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
     if (dustTimeoutRef.current) clearTimeout(dustTimeoutRef.current);
@@ -91,6 +106,10 @@ export default function Section05({ effectsEnabled }: Section05Props) {
         sparkleSoundRef.current.pause();
         sparkleSoundRef.current.currentTime = 0;
       }
+      if (pigOinkSoundRef.current) {
+        pigOinkSoundRef.current.pause();
+        pigOinkSoundRef.current.currentTime = 0;
+      }
     };
   }, []);
 
@@ -103,6 +122,10 @@ export default function Section05({ effectsEnabled }: Section05Props) {
     if (sparkleSoundRef.current) {
       sparkleSoundRef.current.pause();
       sparkleSoundRef.current.currentTime = 0;
+    }
+    if (pigOinkSoundRef.current) {
+      pigOinkSoundRef.current.pause();
+      pigOinkSoundRef.current.currentTime = 0;
     }
   }, [effectsEnabled]);
 
