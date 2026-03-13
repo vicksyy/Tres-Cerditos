@@ -17,23 +17,17 @@ export default function HomeClient() {
   const storyVolume = 0.45;
   const dramaVolume = 1;
   const totalSections = 10;
-  const sectionTransitionMs = 850;
-  const touchSwipeThreshold = 45;
   const mainRef = useRef<HTMLElement | null>(null);
   const storyAudioRef = useRef<HTMLAudioElement | null>(null);
   const dramaAudioRef = useRef<HTMLAudioElement | null>(null);
   const musicEnabledRef = useRef(true);
   const audioUnlockedRef = useRef(false);
   const isDramaSectionRef = useRef(false);
-  const activeSectionIndexRef = useRef(0);
   const prevDramaSectionRef = useRef(false);
   const getTargetVolume = (isDrama: boolean) => (isDrama ? dramaVolume : storyVolume);
   const crossfadeRafRef = useRef<number | null>(null);
   const storyHintTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const restartButtonTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const sectionScrollLockTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isSectionScrollLockedRef = useRef(false);
-  const touchStartYRef = useRef<number | null>(null);
   const [isMusicEnabled, setIsMusicEnabled] = useState(true);
   const [isEffectsEnabled, setIsEffectsEnabled] = useState(true);
   const [isDramaSection, setIsDramaSection] = useState(false);
@@ -66,24 +60,6 @@ export default function HomeClient() {
     storyHintTimeoutRef.current = setTimeout(() => {
       setShowStoryHint(true);
     }, 5000);
-  };
-
-  const requiresStoryCompletion = (sectionIndex: number) => {
-    if (sectionIndex < 2) return false;
-    if (sectionIndex === 5 || sectionIndex === 9) return false;
-    return true;
-  };
-
-  const isSectionStoryComplete = (sectionIndex: number) => {
-    if (!requiresStoryCompletion(sectionIndex)) return true;
-
-    const main = mainRef.current;
-    if (!main) return true;
-
-    const section = main.querySelectorAll<HTMLElement>(".section")[sectionIndex];
-    if (!section) return true;
-
-    return section.dataset.storyComplete === "true";
   };
 
   const isStoryProgressClick = (target: HTMLElement, sectionIndex: number) => {
@@ -231,10 +207,6 @@ export default function HomeClient() {
   }, [isDramaSection]);
 
   useEffect(() => {
-    activeSectionIndexRef.current = activeSectionIndex;
-  }, [activeSectionIndex]);
-
-  useEffect(() => {
     musicEnabledRef.current = isMusicEnabled;
 
     const storyAudio = storyAudioRef.current;
@@ -346,95 +318,6 @@ export default function HomeClient() {
   }, []);
 
   useEffect(() => {
-    const main = mainRef.current;
-    if (!main) return;
-
-    const clearSectionScrollLock = () => {
-      if (sectionScrollLockTimeoutRef.current) {
-        clearTimeout(sectionScrollLockTimeoutRef.current);
-        sectionScrollLockTimeoutRef.current = null;
-      }
-      isSectionScrollLockedRef.current = false;
-    };
-
-    const lockSectionScroll = () => {
-      clearSectionScrollLock();
-      isSectionScrollLockedRef.current = true;
-      sectionScrollLockTimeoutRef.current = setTimeout(() => {
-        isSectionScrollLockedRef.current = false;
-        sectionScrollLockTimeoutRef.current = null;
-      }, sectionTransitionMs);
-    };
-
-    const isInteractiveTarget = (target: EventTarget | null) =>
-      target instanceof HTMLElement &&
-      Boolean(
-        target.closest(
-          "button, a, input, textarea, select, [role='button'], .audio-controls, .story-reset-btn, .section--08-pigs-surprised",
-        ),
-      );
-
-    const scrollOneSection = (direction: 1 | -1) => {
-      if (isIntroLocked || isSectionScrollLockedRef.current) return;
-      if (direction > 0 && !isSectionStoryComplete(activeSectionIndexRef.current)) return;
-
-      const sections = main.querySelectorAll<HTMLElement>(".section");
-      const nextIndex = Math.max(0, Math.min(sections.length - 1, activeSectionIndexRef.current + direction));
-      if (nextIndex === activeSectionIndexRef.current) return;
-
-      lockSectionScroll();
-      sections[nextIndex]?.scrollIntoView({ behavior: "smooth", block: "start" });
-    };
-
-    const handleWheel = (event: WheelEvent) => {
-      if (Math.abs(event.deltaY) < 8 || isInteractiveTarget(event.target)) return;
-      event.preventDefault();
-      scrollOneSection(event.deltaY > 0 ? 1 : -1);
-    };
-
-    const handleTouchStart = (event: TouchEvent) => {
-      if (isInteractiveTarget(event.target)) {
-        touchStartYRef.current = null;
-        return;
-      }
-      touchStartYRef.current = event.touches[0]?.clientY ?? null;
-    };
-
-    const handleTouchMove = (event: TouchEvent) => {
-      if (touchStartYRef.current === null) return;
-      event.preventDefault();
-    };
-
-    const handleTouchEnd = (event: TouchEvent) => {
-      if (touchStartYRef.current === null || isInteractiveTarget(event.target)) return;
-      const endY = event.changedTouches[0]?.clientY;
-      if (typeof endY !== "number") {
-        touchStartYRef.current = null;
-        return;
-      }
-
-      const deltaY = touchStartYRef.current - endY;
-      touchStartYRef.current = null;
-      if (Math.abs(deltaY) < touchSwipeThreshold) return;
-
-      scrollOneSection(deltaY > 0 ? 1 : -1);
-    };
-
-    main.addEventListener("wheel", handleWheel, { passive: false });
-    main.addEventListener("touchstart", handleTouchStart, { passive: true });
-    main.addEventListener("touchmove", handleTouchMove, { passive: false });
-    main.addEventListener("touchend", handleTouchEnd, { passive: true });
-
-    return () => {
-      clearSectionScrollLock();
-      main.removeEventListener("wheel", handleWheel);
-      main.removeEventListener("touchstart", handleTouchStart);
-      main.removeEventListener("touchmove", handleTouchMove);
-      main.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [isIntroLocked]);
-
-  useEffect(() => {
     if (!isIntroLocked) return;
     const main = mainRef.current;
     if (!main) return;
@@ -468,7 +351,12 @@ export default function HomeClient() {
   }, []);
 
   const hasPendingStoryInteraction = (sectionIndex: number) => {
-    return !isSectionStoryComplete(sectionIndex);
+    if (sectionIndex < 2 || sectionIndex === 5 || sectionIndex === 9) return false;
+    const main = mainRef.current;
+    if (!main) return false;
+    const section = main.querySelectorAll<HTMLElement>(".section")[sectionIndex];
+    if (!section) return false;
+    return section.dataset.storyComplete !== "true";
   };
 
   const shouldShowStoryHint = showStoryHint && hasPendingStoryInteraction(activeSectionIndex);
