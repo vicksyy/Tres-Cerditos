@@ -372,7 +372,7 @@ export default function Section03({ effectsEnabled }: Section03Props) {
       <div
         className="section-bg"
         style={{
-          backgroundImage: "url('/img/Section03/bg-section03.png')",
+          backgroundImage: "url('/img/Section03/bg-section03.webp')",
         }}
         aria-hidden="true"
       />
@@ -380,7 +380,7 @@ export default function Section03({ effectsEnabled }: Section03Props) {
       <div ref={sceneRef} className="section-content section--03-content" role="group" aria-label="Cerdito trabajando">
         <img
           className={`section--03-pig-work${isPigFadingOut ? " section--03-pig-work--fade-out" : ""}`}
-          src={showHappyPig ? "/img/Section03/pig1_happy.png" : "/img/Section03/pig1_work.png"}
+          src={showHappyPig ? "/img/Section03/pig1_happy.webp" : "/img/Section03/pig1_work.webp"}
           alt={showHappyPig ? "Cerdito 1 feliz" : "Cerdito 1 trabajando"}
           onClick={handleBuildClick}
           draggable={false}
@@ -389,7 +389,7 @@ export default function Section03({ effectsEnabled }: Section03Props) {
           <img
             key={straw.id}
             className="section--03-straw-piece"
-            src="/img/Section03/straw.png"
+            src="/img/Section03/straw.webp"
             alt="Paja"
             draggable={false}
             style={{
@@ -415,7 +415,7 @@ export default function Section03({ effectsEnabled }: Section03Props) {
                 className={`section--03-house-final section--03-house-layer section--03-house-layer--visible${
                   fadeInStep === 1 ? " section--03-house-layer--fade-in" : ""
                 }`}
-                src="/img/Section03/straw1_house.png"
+                src="/img/Section03/straw1_house.webp"
                 alt="Primera fase de la casa de paja"
                 draggable={false}
               />
@@ -425,7 +425,7 @@ export default function Section03({ effectsEnabled }: Section03Props) {
                 className={`section--03-house-final section--03-house-layer section--03-house-layer--visible${
                   fadeInStep === 2 ? " section--03-house-layer--fade-in" : ""
                 }`}
-                src="/img/Section03/straw2_house.png"
+                src="/img/Section03/straw2_house.webp"
                 alt="Segunda fase de la casa de paja"
                 draggable={false}
               />
@@ -435,14 +435,14 @@ export default function Section03({ effectsEnabled }: Section03Props) {
                 className={`section--03-house-final section--03-house-layer section--03-house-layer--visible${
                   fadeInStep === 3 ? " section--03-house-layer--fade-in" : ""
                 }`}
-                src="/img/Section03/straw_house.png"
+                src="/img/Section03/straw_house.webp"
                 alt="Casa de paja terminada"
                 draggable={false}
               />
             ) : null}
             {showDust ? (
               <span className="section--03-dust" aria-hidden="true">
-                <img className="section--03-dust-img" src="/img/Section03/dust.png" alt="" draggable={false} />
+                <img className="section--03-dust-img" src="/img/Section03/dust.webp" alt="" draggable={false} />
               </span>
             ) : null}
           </span>

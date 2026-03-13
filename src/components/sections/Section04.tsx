@@ -150,7 +150,7 @@ export default function Section04({ effectsEnabled }: Section04Props) {
       <div
         className="section-bg"
         style={{
-          backgroundImage: "url('/img/Section04/bg-section04.png')",
+          backgroundImage: "url('/img/Section04/bg-section04.webp')",
         }}
         aria-hidden="true"
       />
@@ -158,7 +158,7 @@ export default function Section04({ effectsEnabled }: Section04Props) {
       <div className="section-content section--04-content" role="group" aria-label="Cerdito 2 trabajando">
         <img
           className={`section--04-pig-work${hasStartedBuild ? " section--04-pig-work--hidden" : ""}`}
-          src="/img/Section04/pig2_work.png"
+          src="/img/Section04/pig2_work.webp"
           alt="Cerdito 2 trabajando"
           draggable={false}
         />
@@ -168,13 +168,13 @@ export default function Section04({ effectsEnabled }: Section04Props) {
           }${workingOnLeft ? " section--04-pig-working--left" : " section--04-pig-working--right"}${
             switchingWorkingSide ? " section--04-pig-working--switching" : ""
           }`}
-          src="/img/Section04/pig2_working.png"
+          src="/img/Section04/pig2_working.webp"
           alt="Cerdito 2 construyendo"
           draggable={false}
         />
         <img
           className={`section--04-pig-happy${showHappyPig ? " section--04-pig-happy--visible" : ""}`}
-          src="/img/Section04/pig2_happy.png"
+          src="/img/Section04/pig2_happy.webp"
           alt="Cerdito 2 feliz"
           draggable={false}
         />
@@ -192,7 +192,7 @@ export default function Section04({ effectsEnabled }: Section04Props) {
                   : " section--04-tool-img--wobble-b"
                 : ""
             }`}
-            src="/img/Section04/hammer.png"
+            src="/img/Section04/hammer.webp"
             alt=""
             aria-hidden="true"
             draggable={false}
@@ -212,7 +212,7 @@ export default function Section04({ effectsEnabled }: Section04Props) {
                   : " section--04-tool-img--wobble-b"
                 : ""
             }`}
-            src="/img/Section04/nail_tool.png"
+            src="/img/Section04/nail_tool.webp"
             alt=""
             aria-hidden="true"
             draggable={false}
@@ -230,7 +230,7 @@ export default function Section04({ effectsEnabled }: Section04Props) {
                 className={`section--04-house-layer section--04-house-base section--04-house-layer--visible${
                   fadeInStep === 1 ? " section--04-house-layer--fade-in" : ""
                 }`}
-                src="/img/Section04/wooden_house_base.png"
+                src="/img/Section04/wooden_house_base.webp"
                 alt="Base de la casa de madera"
                 draggable={false}
               />
@@ -240,7 +240,7 @@ export default function Section04({ effectsEnabled }: Section04Props) {
                 className={`section--04-house-layer section--04-house-walls section--04-house-layer--visible${
                   fadeInStep === 2 ? " section--04-house-layer--fade-in" : ""
                 }`}
-                src="/img/Section04/wooden_house_walls.png"
+                src="/img/Section04/wooden_house_walls.webp"
                 alt="Paredes de la casa de madera"
                 draggable={false}
               />
@@ -250,14 +250,14 @@ export default function Section04({ effectsEnabled }: Section04Props) {
                 className={`section--04-house-layer section--04-house-full section--04-house-layer--visible${
                   fadeInStep === 3 ? " section--04-house-layer--fade-in" : ""
                 }`}
-                src="/img/Section04/full_wooden_house.png"
+                src="/img/Section04/full_wooden_house.webp"
                 alt="Casa de madera terminada"
                 draggable={false}
               />
             ) : null}
             {showDust ? (
               <span className="section--04-dust" aria-hidden="true">
-                <img className="section--04-dust-img" src="/img/Section04/dust.png" alt="" draggable={false} />
+                <img className="section--04-dust-img" src="/img/Section04/dust.webp" alt="" draggable={false} />
               </span>
             ) : null}
           </span>

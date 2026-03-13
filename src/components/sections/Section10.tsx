@@ -11,9 +11,9 @@ export default function Section10() {
   };
 
   const happyPoses = [
-    { src: "/img/Section10/pigs_happy.png", alt: "Cerditos felices celebrando" },
-    { src: "/img/Section10/pigs_happy_2.png", alt: "Cerditos celebrando con alegria" },
-    { src: "/img/Section10/pigs_happy_3.png", alt: "Cerditos celebrando su victoria" },
+    { src: "/img/Section10/pigs_happy.webp", alt: "Cerditos felices celebrando" },
+    { src: "/img/Section10/pigs_happy_2.webp", alt: "Cerditos celebrando con alegria" },
+    { src: "/img/Section10/pigs_happy_3.webp", alt: "Cerditos celebrando su victoria" },
   ];
 
   return (
@@ -21,7 +21,7 @@ export default function Section10() {
       <div
         className="section-bg"
         style={{
-          backgroundImage: "url('/img/Section10/inside_house.png')",
+          backgroundImage: "url('/img/Section10/inside_house.webp')",
         }}
         aria-hidden="true"
       />

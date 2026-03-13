@@ -134,7 +134,7 @@ export default function Section05({ effectsEnabled }: Section05Props) {
       <div
         className="section-bg"
         style={{
-          backgroundImage: "url('/img/Section05/bg-section05.png')",
+          backgroundImage: "url('/img/Section05/bg-section05.webp')",
         }}
         aria-hidden="true"
       />
@@ -156,7 +156,7 @@ export default function Section05({ effectsEnabled }: Section05Props) {
         >
           <img
             className="section--05-pig-hi"
-            src="/img/Section05/pig3_hi.png"
+            src="/img/Section05/pig3_hi.webp"
             alt="Cerdito 3 saludando"
             draggable={false}
           />
@@ -165,14 +165,14 @@ export default function Section05({ effectsEnabled }: Section05Props) {
           className={`section--05-pig-work${
             showWorkPig && !showHappyPig ? " section--05-pig-work--visible" : ""
           }`}
-          src="/img/Section05/pig3_work.png"
+          src="/img/Section05/pig3_work.webp"
           alt="Cerdito 3 trabajando"
           onClick={handleBuildClick}
           draggable={false}
         />
         <img
           className={`section--05-pig-happy${showHappyPig ? " section--05-pig-happy--visible" : ""}`}
-          src="/img/Section05/pig3_happy.png"
+          src="/img/Section05/pig3_happy.webp"
           alt="Cerdito 3 feliz"
           draggable={false}
         />
@@ -188,7 +188,7 @@ export default function Section05({ effectsEnabled }: Section05Props) {
                 className={`section--05-house-layer section--05-house-step1 section--05-house-layer--visible${
                   fadeInStep === 1 ? " section--05-house-layer--fade-in" : ""
                 }`}
-                src="/img/Section05/brick_house1.png"
+                src="/img/Section05/brick_house1.webp"
                 alt="Primera fase de la casa de ladrillo"
                 draggable={false}
               />
@@ -198,7 +198,7 @@ export default function Section05({ effectsEnabled }: Section05Props) {
                 className={`section--05-house-layer section--05-house-layer--visible${
                   fadeInStep === 2 ? " section--05-house-layer--fade-in" : ""
                 }`}
-                src="/img/Section05/brick_house2.png"
+                src="/img/Section05/brick_house2.webp"
                 alt="Segunda fase de la casa de ladrillo"
                 draggable={false}
               />
@@ -208,14 +208,14 @@ export default function Section05({ effectsEnabled }: Section05Props) {
                 className={`section--05-house-layer section--05-house-layer--visible${
                   fadeInStep === 3 ? " section--05-house-layer--fade-in" : ""
                 }`}
-                src="/img/Section05/brick_house_final.png"
+                src="/img/Section05/brick_house_final.webp"
                 alt="Casa de ladrillo terminada"
                 draggable={false}
               />
             ) : null}
             {showDust ? (
               <span className="section--05-dust" aria-hidden="true">
-                <img className="section--05-dust-img" src="/img/Section04/dust.png" alt="" draggable={false} />
+                <img className="section--05-dust-img" src="/img/Section04/dust.webp" alt="" draggable={false} />
               </span>
             ) : null}
           </span>

@@ -172,7 +172,7 @@ export default function Section06({ effectsEnabled }: Section06Props) {
       <div
         className="section-bg"
         style={{
-          backgroundImage: "url('/img/Section06/bg-section06.png')",
+          backgroundImage: "url('/img/Section06/bg-section06.webp')",
         }}
         aria-hidden="true"
       />
@@ -183,7 +183,7 @@ export default function Section06({ effectsEnabled }: Section06Props) {
       <div className="section-content section--06-content" role="group" aria-label="Escena 6">
         <img
           className={`section--06-wolf${wolfVisible ? " section--06-wolf--visible" : ""}`}
-          src={wolfChanged ? "/img/Section06/wolf_mediumbody2.png" : "/img/Section06/wolf_mediumbody.png"}
+          src={wolfChanged ? "/img/Section06/wolf_mediumbody2.webp" : "/img/Section06/wolf_mediumbody.webp"}
           alt="Lobo en escena"
           onClick={handleWolfClick}
           draggable={false}

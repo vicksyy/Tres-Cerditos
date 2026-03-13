@@ -209,11 +209,11 @@ export default function Section09({ effectsEnabled }: Section09Props) {
   };
 
   const wolfPoses = [
-    { src: "/img/Section08/evil_wolf.png", alt: "Lobo feroz acercandose" },
-    { src: "/img/Section09/wolf_blowing_1.png", alt: "Lobo soplando fuerte" },
-    { src: "/img/Section09/wolf_blowing_3.png", alt: "Lobo soplando de nuevo" },
-    { src: "/img/Section09/wolf_tired.png", alt: "Lobo cansado" },
-    { src: "/img/Section09/wolf_walking.png", alt: "Lobo caminando" },
+    { src: "/img/Section08/evil_wolf.webp", alt: "Lobo feroz acercandose" },
+    { src: "/img/Section09/wolf_blowing_1.webp", alt: "Lobo soplando fuerte" },
+    { src: "/img/Section09/wolf_blowing_3.webp", alt: "Lobo soplando de nuevo" },
+    { src: "/img/Section09/wolf_tired.webp", alt: "Lobo cansado" },
+    { src: "/img/Section09/wolf_walking.webp", alt: "Lobo caminando" },
   ];
 
   return (
@@ -225,7 +225,7 @@ export default function Section09({ effectsEnabled }: Section09Props) {
       <div
         className="section-bg"
         style={{
-          backgroundImage: "url('/img/Section09/bg-section09.png')",
+          backgroundImage: "url('/img/Section09/bg-section09.webp')",
         }}
         aria-hidden="true"
       />
@@ -261,7 +261,7 @@ export default function Section09({ effectsEnabled }: Section09Props) {
               ? " section--09-house--impact-b"
               : ""
           }`}
-          src="/img/Section09/brick_house_final.png"
+          src="/img/Section09/brick_house_final.webp"
           alt="Casa de ladrillo"
           draggable={false}
         />
@@ -270,7 +270,7 @@ export default function Section09({ effectsEnabled }: Section09Props) {
             className={`section--09-preview${
               previewState === "visible" ? " section--09-preview--visible" : ""
             }${previewState === "hiding" ? " section--09-preview--hiding" : ""}`}
-            src="/img/Section09/pigs_scared.png"
+            src="/img/Section09/pigs_scared.webp"
             alt="Cerditos asustados dentro de la casa"
             draggable={false}
           />

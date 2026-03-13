@@ -27,20 +27,20 @@ const initialState: PigState = {
 const pigs: PigDefinition[] = [
   {
     id: "pig1" as const,
-    idle: "/img/Section01/pig1_idle.png",
-    wave: "/img/Section01/pig1_wave.png",
+    idle: "/img/Section01/pig1_idle.webp",
+    wave: "/img/Section01/pig1_wave.webp",
     alt: "Cerdito 1 saludando",
   },
   {
     id: "pig3" as const,
-    idle: "/img/Section01/pig3_idle.png",
-    wave: "/img/Section01/pig3_wave.png",
+    idle: "/img/Section01/pig3_idle.webp",
+    wave: "/img/Section01/pig3_wave.webp",
     alt: "Cerdito 3 saludando",
   },
   {
     id: "pig2" as const,
-    idle: "/img/Section01/pig2_idle.png",
-    wave: "/img/Section01/pig2_wave.png",
+    idle: "/img/Section01/pig2_idle.webp",
+    wave: "/img/Section01/pig2_wave.webp",
     alt: "Cerdito 2 saludando",
   },
 ];
@@ -133,7 +133,7 @@ export default function Section01({ effectsEnabled }: Section01Props) {
       <div
         className="section-bg"
         style={{
-          backgroundImage: "url('/img/Section01/bg-section1.png')",
+          backgroundImage: "url('/img/Section01/bg-section1.webp')",
         }}
         aria-hidden="true"
       />
@@ -175,7 +175,7 @@ export default function Section01({ effectsEnabled }: Section01Props) {
           <span className={`leaf-offset${leafShifted[leaf.id] ? " leaf-offset--shifted" : ""}`}>
             <img
               className="leaf-sprite"
-              src="/img/Section01/leaf.png"
+              src="/img/Section01/leaf.webp"
               alt="Hoja volando"
               draggable={false}
             />

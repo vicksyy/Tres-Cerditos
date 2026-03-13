@@ -27,20 +27,20 @@ const initialState: PigState = {
 const pigs: PigDefinition[] = [
   {
     id: "pig1" as const,
-    idle: "/img/Section02/pig1_goodbye.png",
-    walk: "/img/Section02/pig1_walk_left.png",
+    idle: "/img/Section02/pig1_goodbye.webp",
+    walk: "/img/Section02/pig1_walk_left.webp",
     alt: "Cerdito 1 caminando",
   },
   {
     id: "pig3" as const,
-    idle: "/img/Section02/pig3_goodbye.png",
-    walk: "/img/Section02/pig3_walk_center.png",
+    idle: "/img/Section02/pig3_goodbye.webp",
+    walk: "/img/Section02/pig3_walk_center.webp",
     alt: "Cerdito 3 caminando",
   },
   {
     id: "pig2" as const,
-    idle: "/img/Section02/pig2_goodbye.png",
-    walk: "/img/Section02/pig2_walk_right.png",
+    idle: "/img/Section02/pig2_goodbye.webp",
+    walk: "/img/Section02/pig2_walk_right.webp",
     alt: "Cerdito 2 caminando",
   },
 ];
@@ -82,7 +82,7 @@ export default function Section02({ effectsEnabled }: Section02Props) {
       <div
         className="section-bg"
         style={{
-          backgroundImage: "url('/img/Section02/bg-section02.png')",
+          backgroundImage: "url('/img/Section02/bg-section02.webp')",
         }}
         aria-hidden="true"
       />

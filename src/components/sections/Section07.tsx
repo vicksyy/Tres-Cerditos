@@ -190,7 +190,7 @@ export default function Section07({ effectsEnabled }: Section07Props) {
       <div
         className="section-bg"
         style={{
-          backgroundImage: "url('/img/Section07/bg-section07og.png')",
+          backgroundImage: "url('/img/Section07/bg-section07og.webp')",
         }}
         aria-hidden="true"
       />
@@ -204,13 +204,13 @@ export default function Section07({ effectsEnabled }: Section07Props) {
         <div className={`section--07-wolf-stage${wolfVisible ? " section--07-wolf-stage--visible" : ""}`}>
           <img
             className={`section--07-wolf-evil${wolfIsBlowing ? " section--07-wolf-evil--hidden" : ""}`}
-            src="/img/Section07/evil_wolf.png"
+            src="/img/Section07/evil_wolf.webp"
             alt="Lobo feroz acercandose"
             draggable={false}
           />
           <img
             className={`section--07-wolf-blowing${wolfIsBlowing ? " section--07-wolf-blowing--visible" : ""}`}
-            src="/img/Section07/wolf_blowing.png"
+            src="/img/Section07/wolf_blowing.webp"
             alt="Lobo soplando"
             draggable={false}
           />
@@ -220,7 +220,7 @@ export default function Section07({ effectsEnabled }: Section07Props) {
             hideHouse ? " section--07-house--hidden" : ""
           }${impactMotion && sceneStep === 1 ? " section--07-house--impact" : ""
           }`}
-          src={isBlowing ? "/img/Section07/destroyed_house.png" : "/img/Section07/straw_house.png"}
+          src={isBlowing ? "/img/Section07/destroyed_house.webp" : "/img/Section07/straw_house.webp"}
           alt="Casa de paja"
           draggable={false}
         />
@@ -228,13 +228,13 @@ export default function Section07({ effectsEnabled }: Section07Props) {
           className={`section--07-pig-surprise${showPigSurprise ? " section--07-pig-surprise--visible" : ""}${
             impactMotion && sceneStep === 2 ? " section--07-pig-surprise--impact" : ""
           }`}
-          src="/img/Section07/pig1_surprise.png"
+          src="/img/Section07/pig1_surprise.webp"
           alt="Cerdito sorprendido"
           draggable={false}
         />
         <img
           className={`section--07-pig-run${showPigRun ? " section--07-pig-run--active" : ""}`}
-          src="/img/Section07/pig1_run.png"
+          src="/img/Section07/pig1_run.webp"
           alt="Cerdito corriendo"
           draggable={false}
         />
