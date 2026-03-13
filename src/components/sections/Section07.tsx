@@ -21,6 +21,11 @@ export default function Section07({ effectsEnabled }: Section07Props) {
   const [sceneStep, setSceneStep] = useState(0);
   const [impactMotion, setImpactMotion] = useState(false);
 
+  useEffect(() => {
+    const destroyedHouseImage = new Image();
+    destroyedHouseImage.src = "/img/Section07/destroyed_house.webp";
+  }, []);
+
   const playWolfBlowSound = () => {
     if (!effectsEnabled) return;
     if (!wolfBlowSoundRef.current) {
