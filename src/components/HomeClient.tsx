@@ -14,27 +14,45 @@ import Section09 from "@/components/sections/Section09";
 import Section10 from "@/components/sections/Section10";
 
 export default function HomeClient() {
+  const storyVolume = 0.45;
+  const dramaVolume = 1;
   const totalSections = 10;
+  const sectionTransitionMs = 850;
+  const touchSwipeThreshold = 45;
   const mainRef = useRef<HTMLElement | null>(null);
   const storyAudioRef = useRef<HTMLAudioElement | null>(null);
   const dramaAudioRef = useRef<HTMLAudioElement | null>(null);
   const musicEnabledRef = useRef(true);
+  const audioUnlockedRef = useRef(false);
   const isDramaSectionRef = useRef(false);
+  const activeSectionIndexRef = useRef(0);
   const prevDramaSectionRef = useRef(false);
-  const baseVolumeRef = useRef(1);
+  const getTargetVolume = (isDrama: boolean) => (isDrama ? dramaVolume : storyVolume);
   const crossfadeRafRef = useRef<number | null>(null);
   const storyHintTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const restartButtonTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sectionScrollLockTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isSectionScrollLockedRef = useRef(false);
+  const touchStartYRef = useRef<number | null>(null);
   const [isMusicEnabled, setIsMusicEnabled] = useState(true);
   const [isEffectsEnabled, setIsEffectsEnabled] = useState(true);
   const [isDramaSection, setIsDramaSection] = useState(false);
   const [isIntroLocked, setIsIntroLocked] = useState(true);
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [showStoryHint, setShowStoryHint] = useState(false);
+  const [showRestartButton, setShowRestartButton] = useState(false);
 
   const clearStoryHintTimer = () => {
     if (storyHintTimeoutRef.current) {
       clearTimeout(storyHintTimeoutRef.current);
       storyHintTimeoutRef.current = null;
+    }
+  };
+
+  const clearRestartButtonTimer = () => {
+    if (restartButtonTimeoutRef.current) {
+      clearTimeout(restartButtonTimeoutRef.current);
+      restartButtonTimeoutRef.current = null;
     }
   };
 
@@ -50,8 +68,27 @@ export default function HomeClient() {
     }, 5000);
   };
 
+  const requiresStoryCompletion = (sectionIndex: number) => {
+    if (sectionIndex < 2) return false;
+    if (sectionIndex === 5 || sectionIndex === 9) return false;
+    return true;
+  };
+
+  const isSectionStoryComplete = (sectionIndex: number) => {
+    if (!requiresStoryCompletion(sectionIndex)) return true;
+
+    const main = mainRef.current;
+    if (!main) return true;
+
+    const section = main.querySelectorAll<HTMLElement>(".section")[sectionIndex];
+    if (!section) return true;
+
+    return section.dataset.storyComplete === "true";
+  };
+
   const isStoryProgressClick = (target: HTMLElement, sectionIndex: number) => {
-    if (sectionIndex === 2) return Boolean(target.closest(".section--03-build-trigger"));
+    if (sectionIndex === 2)
+      return Boolean(target.closest(".section--03-build-trigger, .section--03-pig-work"));
     if (sectionIndex === 3) return Boolean(target.closest(".section--04-build-trigger"));
     if (sectionIndex === 4) return Boolean(target.closest(".section--05-content"));
     if (sectionIndex === 5) return Boolean(target.closest(".section--06-wolf"));
@@ -109,44 +146,93 @@ export default function HomeClient() {
     const dramaAudio = dramaAudioRef.current;
     if (!storyAudio || !dramaAudio) return;
 
-    storyAudio.volume = baseVolumeRef.current;
-    dramaAudio.volume = baseVolumeRef.current;
+    storyAudio.volume = getTargetVolume(false);
+    dramaAudio.volume = getTargetVolume(true);
 
-    const tryPlayCurrent = () => {
-      if (!musicEnabledRef.current) return;
-      const active = isDramaSectionRef.current ? dramaAudio : storyAudio;
-      void active.play().catch(() => {
-        // Some browsers block autoplay with sound until user interaction.
-      });
+    const resetAudioElement = (audio: HTMLAudioElement) => {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.muted = false;
     };
 
-    tryPlayCurrent();
+    const unlockAudio = async () => {
+      if (audioUnlockedRef.current) return true;
 
-    const onFirstInteraction = () => {
-      tryPlayCurrent();
+      try {
+        for (const audio of [storyAudio, dramaAudio]) {
+          audio.muted = true;
+          audio.currentTime = 0;
+          await audio.play();
+          audio.pause();
+          audio.currentTime = 0;
+          audio.muted = false;
+        }
+
+        audioUnlockedRef.current = true;
+        return true;
+      } catch {
+        resetAudioElement(storyAudio);
+        resetAudioElement(dramaAudio);
+        return false;
+      }
+    };
+
+    const tryPlayCurrent = async () => {
+      if (!musicEnabledRef.current) return;
+      const unlocked = await unlockAudio();
+      if (!unlocked) return false;
+      const active = isDramaSectionRef.current ? dramaAudio : storyAudio;
+      return active.play().then(
+        () => true,
+        () => {
+          // Some browsers block autoplay with sound until user interaction.
+          return false;
+        },
+      );
+    };
+
+    void tryPlayCurrent();
+
+    const removeUnlockListeners = () => {
       window.removeEventListener("pointerdown", onFirstInteraction);
+      window.removeEventListener("click", onFirstInteraction);
       window.removeEventListener("keydown", onFirstInteraction);
       window.removeEventListener("touchstart", onFirstInteraction);
+      window.removeEventListener("touchend", onFirstInteraction);
     };
 
+    function onFirstInteraction() {
+      void tryPlayCurrent().then((didStart) => {
+        if (didStart || audioUnlockedRef.current) {
+          removeUnlockListeners();
+        }
+      }).catch(() => {
+        // Some browsers block autoplay with sound until user interaction.
+      });
+    }
+
     window.addEventListener("pointerdown", onFirstInteraction, { passive: true });
+    window.addEventListener("click", onFirstInteraction);
     window.addEventListener("keydown", onFirstInteraction);
     window.addEventListener("touchstart", onFirstInteraction, { passive: true });
+    window.addEventListener("touchend", onFirstInteraction, { passive: true });
 
     return () => {
       if (crossfadeRafRef.current) {
         cancelAnimationFrame(crossfadeRafRef.current);
         crossfadeRafRef.current = null;
       }
-      window.removeEventListener("pointerdown", onFirstInteraction);
-      window.removeEventListener("keydown", onFirstInteraction);
-      window.removeEventListener("touchstart", onFirstInteraction);
+      removeUnlockListeners();
     };
   }, []);
 
   useEffect(() => {
     isDramaSectionRef.current = isDramaSection;
   }, [isDramaSection]);
+
+  useEffect(() => {
+    activeSectionIndexRef.current = activeSectionIndex;
+  }, [activeSectionIndex]);
 
   useEffect(() => {
     musicEnabledRef.current = isMusicEnabled;
@@ -165,7 +251,7 @@ export default function HomeClient() {
     const crossfade = (fromAudio: HTMLAudioElement, toAudio: HTMLAudioElement, durationMs: number) => {
       stopCrossfade();
       const fromStartVolume = Math.max(0, Math.min(1, fromAudio.volume));
-      const toTargetVolume = Math.max(0, Math.min(1, baseVolumeRef.current));
+      const toTargetVolume = Math.max(0, Math.min(1, getTargetVolume(toAudio === dramaAudio)));
       const startTime = performance.now();
 
       toAudio.volume = 0;
@@ -195,8 +281,8 @@ export default function HomeClient() {
       stopCrossfade();
       storyAudio.pause();
       dramaAudio.pause();
-      storyAudio.volume = baseVolumeRef.current;
-      dramaAudio.volume = baseVolumeRef.current;
+      storyAudio.volume = getTargetVolume(false);
+      dramaAudio.volume = getTargetVolume(true);
       return;
     }
 
@@ -212,8 +298,8 @@ export default function HomeClient() {
 
     stopCrossfade();
     inactive.pause();
-    inactive.volume = baseVolumeRef.current;
-    active.volume = baseVolumeRef.current;
+    inactive.volume = getTargetVolume(inactive === dramaAudio);
+    active.volume = getTargetVolume(active === dramaAudio);
     void active.play().catch(() => {});
   }, [isMusicEnabled, isDramaSection]);
 
@@ -260,6 +346,95 @@ export default function HomeClient() {
   }, []);
 
   useEffect(() => {
+    const main = mainRef.current;
+    if (!main) return;
+
+    const clearSectionScrollLock = () => {
+      if (sectionScrollLockTimeoutRef.current) {
+        clearTimeout(sectionScrollLockTimeoutRef.current);
+        sectionScrollLockTimeoutRef.current = null;
+      }
+      isSectionScrollLockedRef.current = false;
+    };
+
+    const lockSectionScroll = () => {
+      clearSectionScrollLock();
+      isSectionScrollLockedRef.current = true;
+      sectionScrollLockTimeoutRef.current = setTimeout(() => {
+        isSectionScrollLockedRef.current = false;
+        sectionScrollLockTimeoutRef.current = null;
+      }, sectionTransitionMs);
+    };
+
+    const isInteractiveTarget = (target: EventTarget | null) =>
+      target instanceof HTMLElement &&
+      Boolean(
+        target.closest(
+          "button, a, input, textarea, select, [role='button'], .audio-controls, .story-reset-btn, .section--08-pigs-surprised",
+        ),
+      );
+
+    const scrollOneSection = (direction: 1 | -1) => {
+      if (isIntroLocked || isSectionScrollLockedRef.current) return;
+      if (direction > 0 && !isSectionStoryComplete(activeSectionIndexRef.current)) return;
+
+      const sections = main.querySelectorAll<HTMLElement>(".section");
+      const nextIndex = Math.max(0, Math.min(sections.length - 1, activeSectionIndexRef.current + direction));
+      if (nextIndex === activeSectionIndexRef.current) return;
+
+      lockSectionScroll();
+      sections[nextIndex]?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaY) < 8 || isInteractiveTarget(event.target)) return;
+      event.preventDefault();
+      scrollOneSection(event.deltaY > 0 ? 1 : -1);
+    };
+
+    const handleTouchStart = (event: TouchEvent) => {
+      if (isInteractiveTarget(event.target)) {
+        touchStartYRef.current = null;
+        return;
+      }
+      touchStartYRef.current = event.touches[0]?.clientY ?? null;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (touchStartYRef.current === null) return;
+      event.preventDefault();
+    };
+
+    const handleTouchEnd = (event: TouchEvent) => {
+      if (touchStartYRef.current === null || isInteractiveTarget(event.target)) return;
+      const endY = event.changedTouches[0]?.clientY;
+      if (typeof endY !== "number") {
+        touchStartYRef.current = null;
+        return;
+      }
+
+      const deltaY = touchStartYRef.current - endY;
+      touchStartYRef.current = null;
+      if (Math.abs(deltaY) < touchSwipeThreshold) return;
+
+      scrollOneSection(deltaY > 0 ? 1 : -1);
+    };
+
+    main.addEventListener("wheel", handleWheel, { passive: false });
+    main.addEventListener("touchstart", handleTouchStart, { passive: true });
+    main.addEventListener("touchmove", handleTouchMove, { passive: false });
+    main.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+    return () => {
+      clearSectionScrollLock();
+      main.removeEventListener("wheel", handleWheel);
+      main.removeEventListener("touchstart", handleTouchStart);
+      main.removeEventListener("touchmove", handleTouchMove);
+      main.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [isIntroLocked]);
+
+  useEffect(() => {
     if (!isIntroLocked) return;
     const main = mainRef.current;
     if (!main) return;
@@ -271,21 +446,37 @@ export default function HomeClient() {
   }, [activeSectionIndex, isIntroLocked]);
 
   useEffect(() => {
+    clearRestartButtonTimer();
+    setShowRestartButton(false);
+
+    if (isIntroLocked || activeSectionIndex !== 9) return;
+
+    restartButtonTimeoutRef.current = setTimeout(() => {
+      setShowRestartButton(true);
+    }, 3000);
+
+    return () => {
+      clearRestartButtonTimer();
+    };
+  }, [activeSectionIndex, isIntroLocked]);
+
+  useEffect(() => {
     return () => {
       clearStoryHintTimer();
+      clearRestartButtonTimer();
     };
   }, []);
 
   const hasPendingStoryInteraction = (sectionIndex: number) => {
-    if (sectionIndex < 2 || sectionIndex === 5 || sectionIndex === 9) return false;
-    const main = mainRef.current;
-    if (!main) return false;
-    const section = main.querySelectorAll<HTMLElement>(".section")[sectionIndex];
-    if (!section) return false;
-    return section.dataset.storyComplete !== "true";
+    return !isSectionStoryComplete(sectionIndex);
   };
 
   const shouldShowStoryHint = showStoryHint && hasPendingStoryInteraction(activeSectionIndex);
+
+  const handleRestartStory = () => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+    window.location.reload();
+  };
 
   const handleMainClickCapture = (event: MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement | null;
@@ -347,15 +538,20 @@ export default function HomeClient() {
         ))}
       </div>
       {shouldShowStoryHint ? <p className="story-hint">Haz click para continuar la historia</p> : null}
+      {showRestartButton ? (
+        <button type="button" className="story-reset-btn" onClick={handleRestartStory}>
+          Reiniciar cuento
+        </button>
+      ) : null}
 
-      <audio ref={storyAudioRef} src="/sounds/musica-cuento-infantil-fondo.mp3" preload="auto" loop />
-      <audio ref={dramaAudioRef} src="/sounds/drama-fondo.mp3" preload="auto" loop />
+      <audio ref={storyAudioRef} src="/sounds/musica-cuento-infantil-fondo.mp3" preload="auto" loop playsInline />
+      <audio ref={dramaAudioRef} src="/sounds/drama-fondo.mp3" preload="auto" loop playsInline />
       <Section01 effectsEnabled={isEffectsEnabled} />
       <Section02 effectsEnabled={isEffectsEnabled} />
       <Section03 effectsEnabled={isEffectsEnabled} />
       <Section04 effectsEnabled={isEffectsEnabled} />
       <Section05 effectsEnabled={isEffectsEnabled} />
-      <Section06 />
+      <Section06 effectsEnabled={isEffectsEnabled} />
       <Section07 effectsEnabled={isEffectsEnabled} />
       <Section08 effectsEnabled={isEffectsEnabled} />
       <Section09 effectsEnabled={isEffectsEnabled} />

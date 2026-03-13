@@ -8,10 +8,15 @@ interface Section07Props {
 }
 
 export default function Section07({ effectsEnabled }: Section07Props) {
+  const pigRunDurationMs = 2200;
+  const pigRunFadeDurationMs = 1000;
   const sectionRef = useRef<HTMLElement | null>(null);
   const destroyMotionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wolfBlowSoundRef = useRef<HTMLAudioElement | null>(null);
   const houseExplosionSoundRef = useRef<HTMLAudioElement | null>(null);
+  const runningSoundRef = useRef<HTMLAudioElement | null>(null);
+  const runningFadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const runningFadeRafRef = useRef<number | null>(null);
   const [wolfVisible, setWolfVisible] = useState(false);
   const [sceneStep, setSceneStep] = useState(0);
   const [impactMotion, setImpactMotion] = useState(false);
@@ -38,6 +43,71 @@ export default function Section07({ effectsEnabled }: Section07Props) {
     void houseExplosionSoundRef.current.play().catch(() => {});
   };
 
+  const stopRunningSound = () => {
+    if (runningFadeTimeoutRef.current) {
+      clearTimeout(runningFadeTimeoutRef.current);
+      runningFadeTimeoutRef.current = null;
+    }
+    if (runningFadeRafRef.current) {
+      cancelAnimationFrame(runningFadeRafRef.current);
+      runningFadeRafRef.current = null;
+    }
+    if (!runningSoundRef.current) return;
+    runningSoundRef.current.pause();
+    runningSoundRef.current.currentTime = 0;
+    runningSoundRef.current.volume = 0.75;
+  };
+
+  const playRunningSound = () => {
+    if (!effectsEnabled) return;
+    if (!runningSoundRef.current) {
+      runningSoundRef.current = new Audio("/sounds/running.mp3");
+      runningSoundRef.current.preload = "auto";
+      runningSoundRef.current.volume = 0.75;
+    }
+
+    const runningAudio = runningSoundRef.current;
+    if (!runningAudio) return;
+
+    stopRunningSound();
+
+    const startPlayback = () => {
+      const startFade = () => {
+        const fadeStartTime = performance.now();
+
+        const tick = (now: number) => {
+          const progress = Math.min((now - fadeStartTime) / pigRunFadeDurationMs, 1);
+          runningAudio.volume = 0.75 * (1 - progress);
+
+          if (progress < 1) {
+            runningFadeRafRef.current = requestAnimationFrame(tick);
+            return;
+          }
+
+          runningAudio.pause();
+          runningAudio.currentTime = 0;
+          runningAudio.volume = 0.75;
+          runningFadeRafRef.current = null;
+        };
+
+        runningFadeRafRef.current = requestAnimationFrame(tick);
+      };
+
+      runningAudio.currentTime = 0;
+      runningAudio.volume = 0.75;
+      void runningAudio.play().catch(() => {});
+      runningFadeTimeoutRef.current = setTimeout(startFade, pigRunDurationMs);
+    };
+
+    if (runningAudio.readyState >= 1) {
+      startPlayback();
+      return;
+    }
+
+    runningAudio.addEventListener("loadedmetadata", startPlayback, { once: true });
+    runningAudio.load();
+  };
+
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -61,6 +131,7 @@ export default function Section07({ effectsEnabled }: Section07Props) {
   useEffect(() => {
     return () => {
       if (destroyMotionTimeoutRef.current) clearTimeout(destroyMotionTimeoutRef.current);
+      stopRunningSound();
       if (wolfBlowSoundRef.current) {
         wolfBlowSoundRef.current.pause();
         wolfBlowSoundRef.current.currentTime = 0;
@@ -74,6 +145,7 @@ export default function Section07({ effectsEnabled }: Section07Props) {
 
   useEffect(() => {
     if (effectsEnabled) return;
+    stopRunningSound();
     if (wolfBlowSoundRef.current) {
       wolfBlowSoundRef.current.pause();
       wolfBlowSoundRef.current.currentTime = 0;
@@ -91,6 +163,9 @@ export default function Section07({ effectsEnabled }: Section07Props) {
       if (next === 1 && prev !== 1) {
         playWolfBlowSound();
         playHouseExplosionSound();
+      }
+      if (next === 3 && prev !== 3) {
+        playRunningSound();
       }
       return next;
     });

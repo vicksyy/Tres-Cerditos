@@ -382,6 +382,7 @@ export default function Section03({ effectsEnabled }: Section03Props) {
           className={`section--03-pig-work${isPigFadingOut ? " section--03-pig-work--fade-out" : ""}`}
           src={showHappyPig ? "/img/Section03/pig1_happy.png" : "/img/Section03/pig1_work.png"}
           alt={showHappyPig ? "Cerdito 1 feliz" : "Cerdito 1 trabajando"}
+          onClick={handleBuildClick}
           draggable={false}
         />
         {straws.map((straw) => (

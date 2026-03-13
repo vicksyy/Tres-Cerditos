@@ -12,6 +12,11 @@ const patrickHand = Patrick_Hand({
 export const metadata: Metadata = {
   title: "Los Tres Cerditos - Cuento Interactivo",
   description: "Cuento interactivo y animado para ninos y ninas.",
+  icons: {
+    icon: "/img/favicon.png",
+    shortcut: "/img/favicon.png",
+    apple: "/img/favicon.png",
+  },
 };
 
 export default function RootLayout({

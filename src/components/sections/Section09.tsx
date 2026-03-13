@@ -8,9 +8,15 @@ interface Section09Props {
 }
 
 export default function Section09({ effectsEnabled }: Section09Props) {
+  const wolfWalkDurationMs = 3400;
+  const wolfWalkFadeDurationMs = 800;
+  const wolfWalkPlaybackRate = 0.7;
   const sectionRef = useRef<HTMLElement | null>(null);
   const wolfBlowSoundRef = useRef<HTMLAudioElement | null>(null);
   const wolfTiredSoundRef = useRef<HTMLAudioElement | null>(null);
+  const runningSoundRef = useRef<HTMLAudioElement | null>(null);
+  const runningFadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const runningFadeRafRef = useRef<number | null>(null);
   const [wolfVisible, setWolfVisible] = useState(false);
   const [wolfPoseStep, setWolfPoseStep] = useState(0);
   const houseImpactTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -40,6 +46,75 @@ export default function Section09({ effectsEnabled }: Section09Props) {
     void wolfTiredSoundRef.current.play().catch(() => {});
   };
 
+  const stopRunningSound = () => {
+    if (runningFadeTimeoutRef.current) {
+      clearTimeout(runningFadeTimeoutRef.current);
+      runningFadeTimeoutRef.current = null;
+    }
+    if (runningFadeRafRef.current) {
+      cancelAnimationFrame(runningFadeRafRef.current);
+      runningFadeRafRef.current = null;
+    }
+    if (!runningSoundRef.current) return;
+    runningSoundRef.current.pause();
+    runningSoundRef.current.currentTime = 0;
+    runningSoundRef.current.volume = 0.7;
+    runningSoundRef.current.playbackRate = wolfWalkPlaybackRate;
+  };
+
+  const playRunningSound = () => {
+    if (!effectsEnabled) return;
+    if (!runningSoundRef.current) {
+      runningSoundRef.current = new Audio("/sounds/running.mp3");
+      runningSoundRef.current.preload = "auto";
+      runningSoundRef.current.volume = 0.7;
+      runningSoundRef.current.playbackRate = wolfWalkPlaybackRate;
+    }
+
+    const runningAudio = runningSoundRef.current;
+    if (!runningAudio) return;
+
+    stopRunningSound();
+
+    const startPlayback = () => {
+      const startFade = () => {
+        const fadeStartTime = performance.now();
+
+        const tick = (now: number) => {
+          const progress = Math.min((now - fadeStartTime) / wolfWalkFadeDurationMs, 1);
+          runningAudio.volume = 0.7 * (1 - progress);
+
+          if (progress < 1) {
+            runningFadeRafRef.current = requestAnimationFrame(tick);
+            return;
+          }
+
+          runningAudio.pause();
+          runningAudio.currentTime = 0;
+          runningAudio.volume = 0.7;
+          runningAudio.playbackRate = wolfWalkPlaybackRate;
+          runningFadeRafRef.current = null;
+        };
+
+        runningFadeRafRef.current = requestAnimationFrame(tick);
+      };
+
+      runningAudio.currentTime = 0;
+      runningAudio.volume = 0.7;
+      runningAudio.playbackRate = wolfWalkPlaybackRate;
+      void runningAudio.play().catch(() => {});
+      runningFadeTimeoutRef.current = setTimeout(startFade, wolfWalkDurationMs);
+    };
+
+    if (runningAudio.readyState >= 1) {
+      startPlayback();
+      return;
+    }
+
+    runningAudio.addEventListener("loadedmetadata", startPlayback, { once: true });
+    runningAudio.load();
+  };
+
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -64,6 +139,7 @@ export default function Section09({ effectsEnabled }: Section09Props) {
     return () => {
       if (houseImpactTimeoutRef.current) clearTimeout(houseImpactTimeoutRef.current);
       if (previewTimeoutRef.current) clearTimeout(previewTimeoutRef.current);
+      stopRunningSound();
       if (wolfBlowSoundRef.current) {
         wolfBlowSoundRef.current.pause();
         wolfBlowSoundRef.current.currentTime = 0;
@@ -77,6 +153,7 @@ export default function Section09({ effectsEnabled }: Section09Props) {
 
   useEffect(() => {
     if (effectsEnabled) return;
+    stopRunningSound();
     if (wolfBlowSoundRef.current) {
       wolfBlowSoundRef.current.pause();
       wolfBlowSoundRef.current.currentTime = 0;
@@ -116,6 +193,9 @@ export default function Section09({ effectsEnabled }: Section09Props) {
       }
       if (next === 3 || next === 4) {
         playWolfTiredSound();
+      }
+      if (next === 4 && prev !== 4) {
+        playRunningSound();
       }
       if (next < 4) {
         setHouseImpactVariant((variant) => (variant === 1 ? 2 : 1));
